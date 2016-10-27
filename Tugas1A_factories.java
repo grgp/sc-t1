@@ -4,6 +4,7 @@ import aima.core.agent.Action;
 import aima.core.search.framework.problem.ActionsFunction;
 import aima.core.search.framework.problem.ResultFunction;
 import aima.core.search.framework.problem.GoalTest;
+import aima.core.search.framework.problem.StepCostFunction;
 
 public class Tugas1A_factories {
 
@@ -18,24 +19,24 @@ class JarvisActionsFunction implements ActionsFunction {
             Set<Action> possibleActions = new HashSet<Action>();
 
             if (currentState.items.contains(currentState.t_location)) {
-                // System.out.println("TAKE");
-                possibleActions.add(new ActionTony("TAKE"));
+                System.out.println("                        >>> AMBIL");
+                possibleActions.add(new ActionTony("AMBIL"));
             }
-            else if (moveValid(currentState, "UP")) {
-                // System.out.println("UP");
-                possibleActions.add(new ActionTony("UP"));
+            if (moveValid(currentState, "ATAS")) {
+                // currentState.avoid_return = "BAWAH";
+                possibleActions.add(new ActionTony("ATAS"));
             }
-            else if (moveValid(currentState, "RIGHT")) {
-                // System.out.println("RIGHT");
-                possibleActions.add(new ActionTony("RIGHT"));
+            if (moveValid(currentState, "KANAN")) {
+                // currentState.avoid_return = "KIRI";
+                possibleActions.add(new ActionTony("KANAN"));
             }
-            else if (moveValid(currentState, "DOWN")) {
-                // System.out.println("DOWN");
-                possibleActions.add(new ActionTony("DOWN"));
+            if (moveValid(currentState, "BAWAH")) {
+                // currentState.avoid_return = "ATAS";
+                possibleActions.add(new ActionTony("BAWAH"));
             }
-            else if (moveValid(currentState, "LEFT")) {
-                // System.out.println("LEFT");
-                possibleActions.add(new ActionTony("LEFT"));
+            if (moveValid(currentState, "KIRI")) {
+                // currentState.avoid_return = "KANAN";
+                possibleActions.add(new ActionTony("KIRI"));
             }
 
             return possibleActions;
@@ -49,11 +50,12 @@ class JarvisActionsFunction implements ActionsFunction {
         int checkX = currentState.t_location.x + getXOffset(direction);
         int checkY = currentState.t_location.y + getYOffset(direction);
         if ( inRange("x-axis", checkX) &&
-             inRange("y-axis", checkY) ) {
+             inRange("y-axis", checkY) &&
+             !direction.equals(currentState.avoid_return)) {
             Point tempPoint = new Point(checkX, checkY);
             if ( !currentState.obstacles.contains(tempPoint) ) {
                System.out.println("To: " + tempPoint.x + " " + tempPoint.y);
-               System.out.println(direction);
+               System.out.println("                        >>> " + direction);
                return true;
             }
             return false;
@@ -73,9 +75,9 @@ class JarvisActionsFunction implements ActionsFunction {
     }
 
     private int getXOffset(String direction) {
-        if (direction.equals("UP")) {
+        if (direction.equals("ATAS")) {
             return -1;
-        } else if (direction.equals("DOWN")) {
+        } else if (direction.equals("BAWAH")) {
             return 1;
         } else {
             return 0;
@@ -83,9 +85,9 @@ class JarvisActionsFunction implements ActionsFunction {
     }
 
     private int getYOffset(String direction) {
-      if (direction.equals("LEFT")) {
+      if (direction.equals("KIRI")) {
           return -1;
-      } else if (direction.equals("RIGHT")) {
+      } else if (direction.equals("KANAN")) {
           return 1;
       } else {
           return 0;
@@ -113,5 +115,19 @@ class JarvisGoalTest implements GoalTest {
         } else {
             return false;
         }
+    }
+}
+
+class JarvisStepCostFunction implements StepCostFunction {
+    public double c(Object s, Action a, Object sDelta) {
+        if (a instanceof ActionTony) {
+            ActionTony at = (ActionTony) a;
+            if (at.direction.equals("AMBIL")) {
+                return 0;
+            } else {
+                return 1.0;
+            }
+        }
+        return 0;
     }
 }

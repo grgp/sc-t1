@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.util.Objects;
 import java.util.Set;
 import java.util.HashSet;
 import aima.core.agent.Action;
@@ -15,6 +16,7 @@ class State {
     Set<Point> items;
     Set<Point> obstacles;
     Point t_location;
+    String avoid_return;
 
     public State(int rows, int cols, Set<Point> items, Set<Point> obstacles, Point t_location) {
         this.rows = rows;
@@ -22,14 +24,14 @@ class State {
         this.items = items;
         this.obstacles = obstacles;
         this.t_location = t_location;
+        this.avoid_return = "";
     }
 
     public void updateState(Action a) {
         if (a instanceof ActionTony) {
             ActionTony nextAction = (ActionTony) a;
             if (nextAction == null) {
-                System.out.println("Shouldn't happen");
-            } else if (nextAction.direction.equals("TAKE")) {
+            } else if (nextAction.direction.equals("AMBIL")) {
                 this.items.remove(this.t_location);
             } else {
                 this.t_location.updatePoint(nextAction);
@@ -73,6 +75,19 @@ class Point {
         }
     }
 
+    // public boolean equals(Object obj){
+    //   if (obj instanceof Point){
+    //       Point toCompare = (Point) obj;
+    //       return this.x.equals(toCompare.x) && this.y.equals(toCompare.y);
+    //   }
+    //   return false;
+    // }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
+
 }
 
 class ActionTony implements Action {
@@ -83,10 +98,10 @@ class ActionTony implements Action {
     public ActionTony(String direction) {
         this.direction = direction;
         offsetX = 0; offsetY = 0;
-        if (direction.equals("UP")) offsetX = -1;
-        else if (direction.equals("RIGHT")) offsetY = 1;
-        else if (direction.equals("DOWN")) offsetX = 1;
-        else if (direction.equals("LEFT")) offsetY = -1;
+        if (direction.equals("ATAS")) offsetX = -1;
+        else if (direction.equals("KANAN")) offsetY = 1;
+        else if (direction.equals("BAWAH")) offsetX = 1;
+        else if (direction.equals("KIRI")) offsetY = -1;
     }
 
     public boolean isNoOp() {

@@ -4,10 +4,11 @@ import java.util.HashSet;
 import aima.core.agent.Action;
 import aima.core.search.framework.problem.Problem;
 import aima.core.search.uninformed.IterativeDeepeningSearch;
+import aima.core.search.uninformed.DepthLimitedSearch;
 
 public class Tugas1A_git {
   public static void main(String[] args) {
-    //String strategy = args[0];
+    String strategy = args[0];
 
     int rows = 0, cols = 0, t_initial_row = 0, t_initial_col = 0;
     String tmp[], item_locations[], obst_locations[];
@@ -50,8 +51,14 @@ public class Tugas1A_git {
 
     System.out.println("Starting search");
     Problem problem = new Problem(newState, actionsFunction, resultFunction, goalTest);
-    IterativeDeepeningSearch ids = new IterativeDeepeningSearch();
-    ids.search(problem);
+
+    if (strategy.equals("ids")) {
+        IterativeDeepeningSearch ids = new IterativeDeepeningSearch();
+        ids.search(problem);
+    } else if (strategy.equals("dls")) {
+        DepthLimitedSearch dls = new DepthLimitedSearch(3);
+        dls.search(problem);
+    }
 
     System.out.println("Reached the end bb");
 
