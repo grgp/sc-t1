@@ -60,10 +60,11 @@ public class Tugas1A_git {
             if (s instanceof State) {
                 State currentState = (State) s;
                 Set<Action> possibleActions = new HashSet<Action>();
-                possibleActions.add(new ActionTony("UP"));
-                possibleActions.add(new ActionTony("RIGHT"));
-                possibleActions.add(new ActionTony("DOWN"));
-                possibleActions.add(new ActionTony("LEFT"));
+                possibleActions.add(new ActionTony("UP", currentState));
+                possibleActions.add(new ActionTony("RIGHT", currentState));
+                possibleActions.add(new ActionTony("DOWN", currentState));
+                possibleActions.add(new ActionTony("LEFT", currentState));
+                possibleActions.add(new ActionTony("TAKE", currentState));
                 return possibleActions;
             } else {
                 return null;
@@ -127,12 +128,21 @@ class State {
     }
 
     public void updateState(Action a) {
+        //System.out.println("(" + t_location.x + ", " + t_location.y + ")");
         if (a instanceof ActionTony) {
             ActionTony nextAction = (ActionTony) a;
-            Point tempPoint = new Point(t_location.x, t_location.y);
-            tempPoint.updatePoint(nextAction.getXOffset(), nextAction.getYOffset());
-            if ( !this.obstacles.contains(tempPoint) ) {
-                t_location = tempPoint;
+            if (!a.isNoOp()) {
+                if (nextAction.direction.equals("TAKE")) {
+                    // if on the current tile has an item, remove it
+                    if (items.contains(t_location)) {
+                        items.remove(t_location);
+                        System.out.println("AMBIL");
+                        System.exit(0);
+                    }
+                } else {
+                    t_location.updatePoint(nextAction.getXOffset(), nextAction.getYOffset());
+                    System.out.println(">>> (" + t_location.x + ", " + t_location.y + ")");
+                }
             }
         }
     }
@@ -177,13 +187,36 @@ class Point {
 
 class ActionTony implements Action {
   String direction;
+  State currentState;
 
-  public ActionTony(String direction) {
+  public ActionTony(String direction, State currentState) {
       this.direction = direction;
+      this.currentState = currentState;
   }
 
   public boolean isNoOp() {
-      return false;
+      int checkX = currentState.t_location.x + getYOffset();
+      int checkY = currentState.t_location.y + getXOffset();
+      if ( inRange("x-axis", checkX) &&
+           inRange("y-axis", checkY) ) {
+          Point tempPoint = new Point(checkX, checkY);
+          if ( !currentState.obstacles.contains(tempPoint) ) {
+             return true;
+          }
+          return false;
+      } else {
+          return false;
+      }
+  }
+
+  public boolean inRange(String axis, int index) {
+      if (axis.equals("x-axis")) {
+          return (index <= currentState.cols) && (index >= 0);
+      } else if (axis.equals("y-axis")) {
+          return (index <= currentState.rows) && (index >= 0);
+      } else {
+          return false;
+      }
   }
 
   public int getXOffset() {
