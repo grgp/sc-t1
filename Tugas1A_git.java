@@ -8,7 +8,7 @@ import aima.core.search.framework.problem.ResultFunction;
 import aima.core.search.framework.problem.GoalTest;
 import aima.core.search.uninformed.IterativeDeepeningSearch;
 
-public class Tugas1A_it3 {
+public class Tugas1A_git {
   public static void main(String[] args) {
     //String strategy = args[0];
 
