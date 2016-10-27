@@ -32,6 +32,8 @@ public class Tugas1A_git {
 
     input.close();
 
+    System.out.println("Before adding items and obstacles");
+
     Set<Point> initial_items = new HashSet<Point>();
 
     for (String it : item_locations) {
@@ -40,8 +42,18 @@ public class Tugas1A_git {
         initial_items.add(new Point(Integer.parseInt(ita[0]), Integer.parseInt(ita[1])));
     }
 
+    Set<Point> obstacles = new HashSet<Point>();
+
+    for (String it : obst_locations) {
+        it = it.substring(1, it.length()-1);
+        String[] ita = it.split(",");
+        obstacles.add(new Point(Integer.parseInt(ita[0]), Integer.parseInt(ita[1])));
+    }
+
+    System.out.println("Adding obstacles");
+
     Point t_initial_location = new Point(t_initial_row, t_initial_col);
-    State newState = new State(rows, cols, initial_items, t_initial_location);
+    State newState = new State(rows, cols, initial_items, obstacles, t_initial_location);
 
     ActionsFunction actionsFunction = new ActionsFunction(){
         public Set<Action> actions(Object s) {
@@ -103,23 +115,26 @@ class State {
     int rows;
     int cols;
     Set<Point> items;
-    Set<Point> passables;
+    Set<Point> obstacles;
     Point t_location;
 
-    public State(int rows, int cols, Set<Point> items, Point t_location) {
+    public State(int rows, int cols, Set<Point> items, Set<Point> obstacles, Point t_location) {
         this.rows = rows;
         this.cols = cols;
         this.items = items;
+        this.obstacles = obstacles;
         this.t_location = t_location;
     }
 
-    public State updateState(Action a) {
+    public void updateState(Action a) {
         if (a instanceof ActionTony) {
             ActionTony nextAction = (ActionTony) a;
-            this.t_location.updatePoint(nextAction.getXOffset(),
-                nextAction.getYOffset(), rows, cols);
+            Point tempPoint = new Point(t_location.x, t_location.y);
+            tempPoint.updatePoint(nextAction.getXOffset(), nextAction.getYOffset());
+            if ( !this.obstacles.contains(tempPoint) ) {
+                t_location = tempPoint;
+            }
         }
-        return this;
     }
 
     public boolean equals(Object obj) {
@@ -144,7 +159,7 @@ class Point {
         this.y = y;
     }
 
-    public void updatePoint(int x, int y, int rows, int cols, Set<Point> obstacles) {
+    public void updatePoint(int x, int y) {
         this.x += x;
         this.y += y;
     }
@@ -172,19 +187,19 @@ class ActionTony implements Action {
   }
 
   public int getXOffset() {
-      if (direction.equals("RIGHT")) {
-          return 1;
-      } else if (direction.equals("LEFT")) {
+      if (direction.equals("UP")) {
           return -1;
+      } else if (direction.equals("DOWN")) {
+          return 1;
       } else {
           return 0;
       }
   }
 
   public int getYOffset() {
-    if (direction.equals("UP")) {
+    if (direction.equals("LEFT")) {
         return -1;
-    } else if (direction.equals("DOWN")) {
+    } else if (direction.equals("RIGHT")) {
         return 1;
     } else {
         return 0;
