@@ -9,7 +9,7 @@ public class Tugas1B_it1 {
 
             String[][] rows;
             for (int i=0; i<dimension; i++) {
-                rows[i] = input.nextLine().split(" ");
+                //rows[i] = input.nextLine().split(" ");
             }
 
             String[][] priMap = new String[dimension][dimension];
@@ -21,6 +21,6 @@ public class Tugas1B_it1 {
     }
 }
 
-class SudoBox extends PropositionSymbol {
-
-}
+// class SudoBox extends PropositionSymbol {
+//
+// }
