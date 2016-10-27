@@ -11,32 +11,35 @@ public class Tugas1A_arch {
 }
 
 class State {
-    int rows;
-    int cols;
+    final int rows;
+    final int cols;
+    final Set<Point> obstacles;
     Set<Point> items;
-    Set<Point> obstacles;
     Point t_location;
-    String avoid_return;
 
     public State(int rows, int cols, Set<Point> items, Set<Point> obstacles, Point t_location) {
         this.rows = rows;
         this.cols = cols;
-        this.items = items;
         this.obstacles = obstacles;
+        this.items = items;
         this.t_location = t_location;
-        this.avoid_return = "";
     }
 
-    public void updateState(Action a) {
+    public Object updateState(Action a) {
         if (a instanceof ActionTony) {
             ActionTony nextAction = (ActionTony) a;
-            if (nextAction == null) {
-            } else if (nextAction.direction.equals("AMBIL")) {
-                this.items.remove(this.t_location);
+            Set<Point> newItems = new HashSet<Point>(items);
+            Point newLocation = new Point(t_location);
+            State newState = new State(rows, cols, items, obstacles, newLocation);
+
+            if (nextAction.direction.equals("AMBIL")) {
+                newState.items.remove(this.t_location);
+                return newState;
             } else {
-                this.t_location.updatePoint(nextAction);
+                newState.t_location.updatePoint(nextAction);
+                return newState;
             }
-        }
+        } return null;
     }
 
     public boolean equals(Object obj) {
@@ -59,6 +62,11 @@ class Point {
     public Point(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    public Point(Point p) {
+        this.x = p.x;
+        this.y = p.y;
     }
 
     public void updatePoint(ActionTony a) {

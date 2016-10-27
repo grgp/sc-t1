@@ -46,12 +46,11 @@ class JarvisActionsFunction implements ActionsFunction {
     }
 
     private boolean moveValid(State currentState, String direction) {
-        System.out.println("From: " + currentState.t_location.x + " " + currentState.t_location.y);
+        System.out.println("From: " + currentState.t_location.x + " " + currentState.t_location.y + " | dir: " + direction);
         int checkX = currentState.t_location.x + getXOffset(direction);
         int checkY = currentState.t_location.y + getYOffset(direction);
         if ( inRange("x-axis", checkX) &&
-             inRange("y-axis", checkY) &&
-             !direction.equals(currentState.avoid_return)) {
+             inRange("y-axis", checkY) ) {
             Point tempPoint = new Point(checkX, checkY);
             if ( !currentState.obstacles.contains(tempPoint) ) {
                System.out.println("To: " + tempPoint.x + " " + tempPoint.y);
@@ -99,8 +98,9 @@ class JarvisResultFunction implements ResultFunction {
   public Object result(Object s, Action a) {
       if (s instanceof State && a instanceof ActionTony) {
           State state = (State) s;
-          state.updateState(a);
-          return state;
+          ActionTony newAction = (ActionTony) a;
+          Object newState = state.updateState(newAction);
+          return newState;
       } else {
           return s;
       }
