@@ -18,21 +18,15 @@ public class Tugas1A_git {
     try {
 
 		Scanner input = new Scanner(System.in);
-
     tmp = input.nextLine().split(",");
     rows = Integer.parseInt(tmp[0]);
     cols = Integer.parseInt(tmp[1]);
-
     tmp = input.nextLine().split(",");
     t_initial_row = Integer.parseInt(tmp[0]);
     t_initial_col = Integer.parseInt(tmp[1]);
-
     item_locations = input.nextLine().split(" ");
     obst_locations = input.nextLine().split(" ");
-
     input.close();
-
-    System.out.println("Before adding items and obstacles");
 
     Set<Point> initial_items = new HashSet<Point>();
 
@@ -50,50 +44,11 @@ public class Tugas1A_git {
         obstacles.add(new Point(Integer.parseInt(ita[0]), Integer.parseInt(ita[1])));
     }
 
-    System.out.println("Adding obstacles");
-
     Point t_initial_location = new Point(t_initial_row, t_initial_col);
     State newState = new State(rows, cols, initial_items, obstacles, t_initial_location);
-
-    ActionsFunction actionsFunction = new ActionsFunction(){
-        public Set<Action> actions(Object s) {
-            if (s instanceof State) {
-                State currentState = (State) s;
-                Set<Action> possibleActions = new HashSet<Action>();
-                possibleActions.add(new ActionTony("UP", currentState));
-                possibleActions.add(new ActionTony("RIGHT", currentState));
-                possibleActions.add(new ActionTony("DOWN", currentState));
-                possibleActions.add(new ActionTony("LEFT", currentState));
-                possibleActions.add(new ActionTony("TAKE", currentState));
-                return possibleActions;
-            } else {
-                return null;
-            }
-        }
-    };
-
-    ResultFunction resultFunction = new ResultFunction(){
-        public Object result(Object s, Action a) {
-            if (s instanceof State && a instanceof ActionTony) {
-                State state = (State) s;
-                state.updateState(a);
-                return state;
-            } else {
-                return s;
-            }
-        }
-    };
-
-    GoalTest goalTest = new GoalTest(){
-        public boolean isGoalState(Object s) {
-            if (s instanceof State) {
-                State state = (State) s;
-                return state.items.isEmpty();
-            } else {
-                return false;
-            }
-        }
-    };
+    JarvisActionsFunction actionsFunction = new JarvisActionsFunction();
+    JarvisResultFunction resultFunction = new JarvisResultFunction();
+    JarvisGoalTest goalTest = new JarvisGoalTest();
 
     Problem problem = new Problem(newState, actionsFunction, resultFunction, goalTest);
 
@@ -110,6 +65,46 @@ public class Tugas1A_git {
 	  }
 
   }
+}
+
+class JarvisActionsFunction implements ActionsFunction {
+    public Set<Action> actions(Object s) {
+        if (s instanceof State) {
+            State currentState = (State) s;
+            Set<Action> possibleActions = new HashSet<Action>();
+            possibleActions.add(new ActionTony("UP", currentState));
+            possibleActions.add(new ActionTony("RIGHT", currentState));
+            possibleActions.add(new ActionTony("DOWN", currentState));
+            possibleActions.add(new ActionTony("LEFT", currentState));
+            possibleActions.add(new ActionTony("TAKE", currentState));
+            return possibleActions;
+        } else {
+            return null;
+        }
+    }
+}
+
+class JarvisResultFunction implements ResultFunction {
+  public Object result(Object s, Action a) {
+      if (s instanceof State && a instanceof ActionTony) {
+          State state = (State) s;
+          state.updateState(a);
+          return state;
+      } else {
+          return s;
+      }
+  }
+}
+
+class JarvisGoalTest implements GoalTest {
+    public boolean isGoalState(Object s) {
+        if (s instanceof State) {
+            State state = (State) s;
+            return state.items.isEmpty();
+        } else {
+            return false;
+        }
+    }
 }
 
 class State {
