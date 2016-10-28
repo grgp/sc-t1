@@ -1,4 +1,3 @@
-import aima.core.logic.propositional.parsing.ast.PropositionSymbol;
 import java.util.Scanner;
 
 public class Tugas1B_it1 {
@@ -21,6 +20,6 @@ public class Tugas1B_it1 {
     }
 }
 
-// class SudoBox extends PropositionSymbol {
+// class SudoCell extends PropositionSymbol {
 //
 // }

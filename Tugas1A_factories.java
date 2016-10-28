@@ -136,12 +136,6 @@ class JarvisStepCostFunction implements StepCostFunction {
     }
 }
 
-class JarvisQueueSearch extends QueueSearch {
-    public JarvisQueueSearch() {
-
-    }
-}
-
 class JarvisHeuristicFunction implements HeuristicFunction {
     public double h (Object state) {
         return 0;
