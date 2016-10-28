@@ -1,4 +1,6 @@
 import java.util.Scanner;
+import java.util.ArrayList;
+import aima.core.logic.propositional.parsing.ast.PropositionSymbol;
 
 public class Tugas1B_it1 {
     public static void main(String[] args) {
@@ -20,6 +22,25 @@ public class Tugas1B_it1 {
     }
 }
 
-// class SudoCell extends PropositionSymbol {
-//
-// }
+class SudokuFactory {
+    final int dimension;
+    final ArrayList<PropositionSymbol> symbols;
+
+    public SudokuFactory(int dimension) {
+        this.dimension = dimension;
+        this.symbols = generateSymbols();
+    }
+
+    private ArrayList<PropositionSymbol> generateSymbols() {
+        ArrayList<PropositionSymbol> generated = new ArrayList<PropositionSymbol>();
+        for (int x=1; x<dimension; x++) {
+            for (int y=1; y<dimension; y++) {
+                for (int z=1; z<dimension; z++) {
+                    generated.add(new PropositionSymbol(x+""+y+""+z));
+                }
+            }
+        }
+        return generated;
+    }
+
+}

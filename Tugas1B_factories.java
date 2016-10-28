@@ -5,7 +5,3 @@ public class Tugas1B_factories {
 
     }
 }
-
-class Board {
-    // Set<PropositionSymbol> 
-}

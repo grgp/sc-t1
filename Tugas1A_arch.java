@@ -54,6 +54,12 @@ class State {
         }
     }
 
+    // get the shortest manhattan distance between
+    //     current location and all other items
+    public double getShortestManhattanDistance() {
+        return 0;
+    }
+
 }
 
 class Point {

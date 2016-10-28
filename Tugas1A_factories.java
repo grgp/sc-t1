@@ -137,7 +137,12 @@ class JarvisStepCostFunction implements StepCostFunction {
 }
 
 class JarvisHeuristicFunction implements HeuristicFunction {
-    public double h (Object state) {
-        return 0;
+    public double h (Object s) {
+        if (s instanceof State) {
+            State state = (State) s;
+            return state.getShortestManhattanDistance();
+        } else {
+            return 0;
+        }
     }
 }
