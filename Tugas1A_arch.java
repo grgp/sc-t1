@@ -16,16 +16,14 @@ class State {
     final Set<Point> obstacles;
     final Set<Point> items;
     final Point t_location;
-    final String avoid_return;
 
     public State(int rows, int cols, Set<Point> items, Set<Point> obstacles,
-                 Point t_location, String avoid_return) {
+                 Point t_location) {
         this.rows = rows;
         this.cols = cols;
         this.obstacles = obstacles;
         this.items = items;
         this.t_location = t_location;
-        this.avoid_return = avoid_return;
     }
 
     public Object updateState(Action a) {
@@ -33,18 +31,14 @@ class State {
             ActionTony nextAction = (ActionTony) a;
             Set<Point> newItems = new HashSet<Point>(items);
             Point newLocation = new Point(t_location);
-            String avoidReturn = this.avoid_return;
 
             if (nextAction.direction.equals("AMBIL")) {
                 newItems.remove(this.t_location);
-                System.out.println("Items empty: " + newItems.isEmpty());
             } else {
                 newLocation.updatePoint(nextAction);
-                avoidReturn = avoidReturnTo(nextAction.direction);
             }
 
-            State newState = new State(rows, cols, newItems, obstacles, newLocation,
-                                       avoidReturn);
+            State newState = new State(rows, cols, newItems, obstacles, newLocation);
             return newState;
         } return null;
     }
@@ -58,14 +52,6 @@ class State {
         } else {
             return false;
         }
-    }
-
-    private String avoidReturnTo(String direction) {
-        if (direction.equals("ATAS")) return "BAWAH";
-        else if (direction.equals("KANAN")) return "KIRI";
-        else if (direction.equals("BAWAH")) return "ATAS";
-        else if (direction.equals("KIRI")) return "KANAN";
-        else return "";
     }
 
 }

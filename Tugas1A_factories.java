@@ -46,8 +46,7 @@ class JarvisActionsFunction implements ActionsFunction {
         int checkX = currentState.t_location.x + getXOffset(direction);
         int checkY = currentState.t_location.y + getYOffset(direction);
         if ( inRange("x-axis", checkX) &&
-             inRange("y-axis", checkY) &&
-             !currentState.avoid_return.equals(direction) ) {
+             inRange("y-axis", checkY) ) {
             Point tempPoint = new Point(checkX, checkY);
             if ( !currentState.obstacles.contains(tempPoint) ) {
                System.out.println("From: " + currentState.t_location.x + " " + currentState.t_location.y);
@@ -109,7 +108,6 @@ class JarvisGoalTest implements GoalTest {
     public boolean isGoalState(Object s) {
         if (s instanceof State) {
             State state = (State) s;
-            System.out.println("GOALTEST: " + state.items.isEmpty());
             return state.items.isEmpty();
         } else {
             return false;
