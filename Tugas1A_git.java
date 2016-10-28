@@ -43,7 +43,7 @@ public class Tugas1A_git {
     }
 
     Point t_initial_location = new Point(t_initial_row, t_initial_col);
-    State newState = new State(rows, cols, initial_items, obstacles, t_initial_location);
+    State newState = new State(rows, cols, initial_items, obstacles, t_initial_location, "");
 
     JarvisActionsFunction actionsFunction = new JarvisActionsFunction();
     JarvisResultFunction resultFunction = new JarvisResultFunction();

@@ -23,19 +23,15 @@ class JarvisActionsFunction implements ActionsFunction {
                 possibleActions.add(new ActionTony("AMBIL"));
             }
             if (moveValid(currentState, "ATAS")) {
-                // currentState.avoid_return = "BAWAH";
                 possibleActions.add(new ActionTony("ATAS"));
             }
             if (moveValid(currentState, "KANAN")) {
-                // currentState.avoid_return = "KIRI";
                 possibleActions.add(new ActionTony("KANAN"));
             }
             if (moveValid(currentState, "BAWAH")) {
-                // currentState.avoid_return = "ATAS";
                 possibleActions.add(new ActionTony("BAWAH"));
             }
             if (moveValid(currentState, "KIRI")) {
-                // currentState.avoid_return = "KANAN";
                 possibleActions.add(new ActionTony("KIRI"));
             }
 
@@ -46,14 +42,16 @@ class JarvisActionsFunction implements ActionsFunction {
     }
 
     private boolean moveValid(State currentState, String direction) {
-        System.out.println("From: " + currentState.t_location.x + " " + currentState.t_location.y + " | dir: " + direction);
+        // System.out.println("From: " + currentState.t_location.x + " " + currentState.t_location.y + " | dir: " + direction);
         int checkX = currentState.t_location.x + getXOffset(direction);
         int checkY = currentState.t_location.y + getYOffset(direction);
         if ( inRange("x-axis", checkX) &&
-             inRange("y-axis", checkY) ) {
+             inRange("y-axis", checkY) &&
+             !currentState.avoid_return.equals(direction) ) {
             Point tempPoint = new Point(checkX, checkY);
             if ( !currentState.obstacles.contains(tempPoint) ) {
-               System.out.println("To: " + tempPoint.x + " " + tempPoint.y);
+               System.out.println("From: " + currentState.t_location.x + " " + currentState.t_location.y);
+               System.out.println("To: " + tempPoint.x + " " + tempPoint.y + " | dir: " + direction);
                System.out.println("                        >>> " + direction);
                return true;
             }
@@ -111,6 +109,7 @@ class JarvisGoalTest implements GoalTest {
     public boolean isGoalState(Object s) {
         if (s instanceof State) {
             State state = (State) s;
+            System.out.println("GOALTEST: " + state.items.isEmpty());
             return state.items.isEmpty();
         } else {
             return false;
