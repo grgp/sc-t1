@@ -1,6 +1,8 @@
 import java.util.Scanner;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
 import aima.core.agent.Action;
 import aima.core.search.framework.problem.Problem;
 import aima.core.search.uninformed.IterativeDeepeningSearch;
@@ -51,13 +53,21 @@ public class Tugas1A_git {
 
     System.out.println("Starting search");
     Problem problem = new Problem(newState, actionsFunction, resultFunction, goalTest);
+    List<Action> listOfActions = new ArrayList<Action>();
 
     if (strategy.equals("ids")) {
         IterativeDeepeningSearch ids = new IterativeDeepeningSearch();
-        ids.search(problem);
+        listOfActions = ids.search(problem);
     } else if (strategy.equals("dls")) {
         DepthLimitedSearch dls = new DepthLimitedSearch(3);
-        dls.search(problem);
+        listOfActions = dls.search(problem);
+    }
+
+    for (Action action : listOfActions) {
+        if (action instanceof ActionTony) {
+          ActionTony at = (ActionTony) action;
+          System.out.println(at.direction);
+        }
     }
 
     System.out.println("Reached the end bb");
