@@ -7,6 +7,7 @@ import aima.core.agent.Action;
 import aima.core.search.framework.problem.Problem;
 import aima.core.search.uninformed.IterativeDeepeningSearch;
 import aima.core.search.uninformed.DepthLimitedSearch;
+import aima.core.search.informed.AStarSearch;
 
 public class Tugas1A_git {
   public static void main(String[] args) {
@@ -61,6 +62,9 @@ public class Tugas1A_git {
     } else if (strategy.equals("dls")) {
         DepthLimitedSearch dls = new DepthLimitedSearch(3);
         listOfActions = dls.search(problem);
+    } else if (strategy.equals("astar")) {
+        JarvisQueueSearch impl = new JarvisQueueSearch();
+        AStarSearch astar = new AStarSearch(impl, new JarvisHeuristicFunction());
     }
 
     for (Action action : listOfActions) {

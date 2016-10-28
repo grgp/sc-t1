@@ -1,10 +1,17 @@
 import java.util.Set;
 import java.util.HashSet;
 import aima.core.agent.Action;
+import aima.core.search.framework.problem.Problem;
 import aima.core.search.framework.problem.ActionsFunction;
 import aima.core.search.framework.problem.ResultFunction;
 import aima.core.search.framework.problem.GoalTest;
 import aima.core.search.framework.problem.StepCostFunction;
+
+import aima.core.search.framework.HeuristicFunction;
+import aima.core.search.framework.qsearch.QueueSearch;
+import aima.core.search.framework.Node;
+import java.util.Queue;
+import java.util.PriorityQueue;
 
 public class Tugas1A_factories {
 
@@ -125,6 +132,18 @@ class JarvisStepCostFunction implements StepCostFunction {
                 return 1.0;
             }
         }
+        return 0;
+    }
+}
+
+class JarvisQueueSearch extends QueueSearch {
+    public JarvisQueueSearch() {
+
+    }
+}
+
+class JarvisHeuristicFunction implements HeuristicFunction {
+    public double h (Object state) {
         return 0;
     }
 }
