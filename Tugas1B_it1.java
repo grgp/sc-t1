@@ -33,10 +33,10 @@ class SudokuFactory {
 
     private ArrayList<PropositionSymbol> generateSymbols() {
         ArrayList<PropositionSymbol> generated = new ArrayList<PropositionSymbol>();
-        for (int x=1; x<dimension; x++) {
-            for (int y=1; y<dimension; y++) {
-                for (int z=1; z<dimension; z++) {
-                    generated.add(new PropositionSymbol(x+""+y+""+z));
+        for (int x=1; x<=dimension; x++) {
+            for (int y=1; y<=dimension; y++) {
+                for (int z=1; z<=dimension; z++) {
+                    generated.add(new PropositionSymbol("x"+x+"y"+y+"z"+z));
                 }
             }
         }
