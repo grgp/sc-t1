@@ -4,10 +4,15 @@ import aima.core.logic.propositional.parsing.ast.ComplexSentence;
 import aima.core.logic.propositional.parsing.ast.Sentence;
 import aima.core.logic.propositional.parsing.ast.Connective;
 import aima.core.logic.propositional.parsing.ast.PropositionSymbol;
+
 import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import aima.core.logic.propositional.inference.DPLL;
+import aima.core.logic.propositional.inference.DPLLSatisfiable;
+import aima.core.logic.propositional.inference.OptimizedDPLL;
 
 public class SentencesTest {
     public static void main (String[] args) {
@@ -15,14 +20,22 @@ public class SentencesTest {
         PropositionSymbol aa = new PropositionSymbol("A");
         PropositionSymbol bb = new PropositionSymbol("B");
         PropositionSymbol cc = new PropositionSymbol("C");
-        ComplexSentence complex = new ComplexSentence(Connective.AND, aa, bb);
+        PropositionSymbol dd = new PropositionSymbol("D");
+        ComplexSentence complex = new ComplexSentence(Connective.OR, aa, bb);
+        ComplexSentence complex2 = new ComplexSentence(Connective.AND, cc, dd);
+        ComplexSentence complex3 = new ComplexSentence(Connective.OR, complex, complex2);
+        DPLLSatisfiable dpls = new DPLLSatisfiable();
+        
         Scanner sc = new Scanner(System.in);
         values.put(aa, true);
-        values.put(bb, true);
+        values.put(bb, false);
+        values.put(cc, false);
 
         Model model = new Model(values);
+        System.out.println("Model dpll satisfiable : " + model.isTrue(complex));
+
         System.out.println("Model getValue: " + model.getValue(aa));
-        System.out.println("Boolean getValue: " + model.isTrue(aa));
+        System.out.println("Model isTrue: " + model.isTrue(complex));
         System.out.println("Complex sentence is and sentence: " + complex.isAndSentence());
 
         int dimension = Integer.parseInt(sc.nextLine());
@@ -31,7 +44,11 @@ public class SentencesTest {
         System.out.println("Symbols count: " + sl.symbols.size());
 
         Sentence testDisj = complex.newDisjunction(sl.getSymbolsInRow(1));
-        Model newModel = sl.assignValuesInOrder(1);
+        Sentence testDisj2 = complex.newDisjunction(aa, bb);
+        System.out.println("Value of sentence testDisj2 to model is: " + model.isTrue(testDisj2));
+        // String symvals = sc.nextLine();
+        sl.assignValuesInOrder(1);
+        Model newModel = sl.model;
         System.out.println("Value of sentence acc. to model is: " + newModel.isTrue(testDisj));
     }
 }
@@ -45,6 +62,18 @@ class SudokuLaboratory {
         this.dimension = dimension;
         this.symbols = generateSymbols();
         this.model = new Model();
+    }
+
+    public void assignValuesInOrder(int row) {
+        Scanner sc = new Scanner(System.in);
+        Map<PropositionSymbol, Boolean> values = new HashMap<PropositionSymbol, Boolean>();
+        for (PropositionSymbol symbol : symbols) {
+            System.out.print(symbol.getSymbol() + ": ");
+            if (sc.nextLine().equals("true")) {
+                values.put(symbol, true);
+            }
+        }
+        this.model = new Model(values);
     }
 
     private ArrayList<PropositionSymbol> generateSymbols() {
