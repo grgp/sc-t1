@@ -41,25 +41,22 @@ class SudokuFactory {
         return generated;
     }
 
-    public Sentence cellSatifiesSudoku() {
-        ComplexSentence all_sat = (ComplexSentence) cellUniqueInRows();
+    public ComplexSentence cellSatifiesSudoku() {
+        ArrayList<ComplexSentence> all_specs = cellUniqueInRows();
+        ComplexSentence all_sentences = mergeConjunction(all_specs);
         return all_sat;
     }
 
-    private Sentence cellUniqueInRows() {
-        ComplexSentence all_rows = null;
+    private ArrayList<ComplexSentence> cellUniqueInRows() {
+        ArrayList<ComplexSentence> all_rows = new ArrayList<ComplexSentence>();
         for (int index = 1; index <= this.dimension; index++) {
-            ComplexSentence unique_row = (ComplexSentence) eachCellUniqueInRow(index);
-            if (all_rows == null) {
-                all_rows = unique_row;
-            } else {
-                all_rows = new ComplexSentence(all_rows, Connective.AND, unique_row);
-            }
+            ComplexSentence unique_row = eachCellUniqueInRow(index);
+            all_rows.add(unique_row);
         }
         return all_rows;
     }
 
-    private Sentence eachCellUniqueInRow(int row_index) {
+    private ComplexSentence eachCellUniqueInRow(int row_index) {
         ComplexSentence row = null;
         for (int value = 1; value <= dimension; value++) {
             for (int cell = 1; cell < dimension; cell++) {
@@ -78,4 +75,8 @@ class SudokuFactory {
         }
         return row;
     }
+
+    // private ComplexSentence mergeConjunction(ArrayList<ComplexSentence> all_specs) {
+    //     mergeConjunction()
+    // }
 }
