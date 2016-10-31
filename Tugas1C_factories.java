@@ -26,7 +26,7 @@ class SudokuFactory {
         this.dimension = dimension;
         this.symbols = generateSymbols();
         this.kb = new KnowledgeBase();
-        kb.tell(cellSatifiesSudoku());
+        cellSatifiesSudoku();
     }
 
     private HashMap<String, PropositionSymbol> generateSymbols() {
@@ -41,29 +41,25 @@ class SudokuFactory {
         return generated;
     }
 
-    public ComplexSentence cellSatifiesSudoku() {
-        ArrayList<ComplexSentence> all_specs = cellUniqueInRows();
-        ComplexSentence all_sentences = mergeConjunction(all_specs);
-        return all_sat;
+    private void cellSatifiesSudoku() {
+        cellUniqueInRows();
     }
 
-    private ArrayList<ComplexSentence> cellUniqueInRows() {
-        ArrayList<ComplexSentence> all_rows = new ArrayList<ComplexSentence>();
+    private void cellUniqueInRows() {
         for (int index = 1; index <= this.dimension; index++) {
             ComplexSentence unique_row = eachCellUniqueInRow(index);
-            all_rows.add(unique_row);
+            kb.tell(unique_row);
         }
-        return all_rows;
     }
 
     private ComplexSentence eachCellUniqueInRow(int row_index) {
         ComplexSentence row = null;
         for (int value = 1; value <= dimension; value++) {
-            for (int cell = 1; cell < dimension; cell++) {
+            for (int cell = 1; cell <= dimension; cell++) {
                 ComplexSentence cs1 = new ComplexSentence(Connective.NOT,
                             symbols.get("x"+row_index+"y"+cell+"z"+value));
                 ComplexSentence cs2 = new ComplexSentence(Connective.NOT,
-                            symbols.get("x"+row_index+"y"+(cell+1)+"z"+value));
+                            symbols.get("x"+row_index+"y"+((cell%dimension)+1)+"z"+value));
                 ComplexSentence csDisj = new ComplexSentence(cs1, Connective.OR, cs2);
 
                 if (row == null) {
