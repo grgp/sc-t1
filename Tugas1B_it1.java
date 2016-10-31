@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.TreeMap;
+import java.util.Set;
+import java.util.List;
 
 import aima.core.logic.propositional.kb.data.Model;
 import aima.core.logic.propositional.parsing.ast.AtomicSentence;
@@ -17,6 +19,11 @@ import aima.core.logic.propositional.inference.DPLLSatisfiable;
 import aima.core.logic.propositional.inference.OptimizedDPLL;
 import aima.core.logic.propositional.kb.data.Literal;
 import aima.core.logic.propositional.kb.data.Clause;
+
+import aima.core.logic.propositional.visitors.ConvertToConjunctionOfClauses;
+import aima.core.logic.propositional.inference.WalkSAT;
+import aima.core.logic.propositional.kb.data.ConjunctionOfClauses;
+import java.util.Random;
 
 public class Tugas1B_it1 {
     public static void main(String[] args) {
@@ -42,11 +49,21 @@ public class Tugas1B_it1 {
                 }
             }
 
-            SudokuSentenceBuilder scb = new SudokuSentenceBuilder(dimension, sf.symbols);
-            System.out.println(scb.cellSatifiesSudoku());
+            sf.model = new Model(values);
+            System.out.println(sf.cellSatifiesSudoku());
+            System.out.println("initial model: \n"+ sf.model);
 
-            Model model = new Model(values);
-            System.out.println(model);
+            ConvertToConjunctionOfClauses ctcc = new ConvertToConjunctionOfClauses();
+            ConjunctionOfClauses coc = ctcc.convert(sf.cellSatifiesSudoku());
+            System.out.println("\n-----\nConjunction of Clauses:\n"+coc);
+            WalkSATModified ws = new WalkSATModified();
+            System.out.println("");
+            Model newerModel = ws.walkSAT(coc.getClauses(), 0.5, -1, sf.model);
+
+            OptimizedDPLL odp = new OptimizedDPLL();
+
+            System.out.println("\nnewerModel: \n\n"+newerModel);
+
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -55,39 +72,54 @@ public class Tugas1B_it1 {
     }
 }
 
-class SudokuFactory {
-    final int dimension;
-    final HashMap<String, PropositionSymbol> symbols;
-    Model model;
+class WalkSATModified extends WalkSAT {
+    public Model walkSAT(Set<Clause> clauses, double p, int maxFlips, Model model) {
+		assertLegalProbability(p);
 
-    public SudokuFactory(int dimension) {
-        this.dimension = dimension;
-        this.symbols = generateSymbols();
-        this.model = new Model();
-    }
+		// for i = 1 to max_flips do (Note: maxFlips < 0 means infinity)
+		for (int i = 0; i < maxFlips || maxFlips < 0; i++) {
+			// if model satisfies clauses then return model
+			if (model.satisfies(clauses)) {
+				return model;
+			}
 
-    private HashMap<String, PropositionSymbol> generateSymbols() {
-        HashMap<String, PropositionSymbol> generated = new HashMap<String, PropositionSymbol>();
-        for (int x=1; x<=dimension; x++) {
-            for (int y=1; y<=dimension; y++) {
-                for (int z=1; z<=dimension; z++) {
-                    generated.put("x"+x+"y"+y+"z"+z, new PropositionSymbol("x"+x+"y"+y+"z"+z));
-                }
-            }
-        }
-        return generated;
-    }
+			// clause <- a randomly selected clause from clauses that is false
+			// in model
+			Clause clause = randomlySelectFalseClause(clauses, model);
 
+			// with probability p flip the value in model of a randomly selected
+			// symbol from clause
+			if (random.nextDouble() < p) {
+				model = model.flip(randomlySelectSymbolFromClause(clause));
+			} else {
+				// else flip whichever symbol in clause maximizes the number of
+				// satisfied clauses
+				model = flipSymbolInClauseMaximizesNumberSatisfiedClauses(
+						clause, clauses, model);
+			}
+		}
 
-    public ArrayList<PropositionSymbol> getSymbolsInRow(int row) {
-        char selected_row = ("" + row).charAt(0);
-        ArrayList<PropositionSymbol> row_symbols = new ArrayList<PropositionSymbol>();
-        for (PropositionSymbol symbol : row_symbols) {
-            if (symbol.getSymbol().charAt(1) == selected_row) {
-                row_symbols.add(symbol);
-            }
-        }
-        return row_symbols;
-    }
+		// return failure
+		return null;
+	}
+
+    private Random random = new Random();
+
+    protected Clause randomlySelectFalseClause(Set<Clause> clauses, Model model) {
+		// Collect the clauses that are false in the model
+        System.out.println("clauses size: "+clauses.size());
+        System.out.println("----\nClauses in randomly:\n"+clauses);
+		List<Clause> falseClauses = new ArrayList<Clause>();
+		for (Clause c : clauses) {
+			if (Boolean.FALSE.equals(model.determineValue(c))) {
+				falseClauses.add(c);
+			}
+		}
+        System.out.println("falsecla size: "+falseClauses.size());
+
+		// a randomly selected clause from clauses that is false
+		Clause result = falseClauses.get(random.nextInt(falseClauses.size()));
+		return result;
+	}
 
 }

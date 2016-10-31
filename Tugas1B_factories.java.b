@@ -40,12 +40,12 @@ class SudokuFactory {
         return generated;
     }
 
-    public Sentence cellSatifiesSudoku() {
+    public ArrayList<Sentence> cellSatifiesSudoku() {
         ComplexSentence all_sat = (ComplexSentence) cellUniqueInRows();
         return all_sat;
     }
 
-    private Sentence cellUniqueInRows() {
+    private ArrayList<Sentence> cellUniqueInRows() {
         ComplexSentence all_rows = null;
         for (int index = 1; index <= this.dimension; index++) {
             ComplexSentence unique_row = (ComplexSentence) eachCellUniqueInRow(index);
@@ -58,8 +58,8 @@ class SudokuFactory {
         return all_rows;
     }
 
-    private Sentence eachCellUniqueInRow(int row_index) {
-        ComplexSentence row = null;
+    private ComplexSentence eachCellUniqueInRow(int row_index) {
+        ArrayList<ComplexSentence> listOfDisjuncts = new ArrayList<ComplexSentence>();
         for (int value = 1; value <= dimension; value++) {
             for (int cell = 1; cell < dimension; cell++) {
                 ComplexSentence cs1 = new ComplexSentence(Connective.NOT,
@@ -68,13 +68,13 @@ class SudokuFactory {
                             symbols.get("x"+row_index+"y"+(cell+1)+"z"+value));
                 ComplexSentence csDisj = new ComplexSentence(cs1, Connective.OR, cs2);
 
-                if (row == null) {
-                    row = csDisj;
-                } else {
-                    row = new ComplexSentence(row, Connective.AND, csDisj);
-                }
+                als.add(csDisj);
             }
         }
         return row;
+    }
+
+    private ComplexSentence mergeConjunction(ArrayList<ComplexSentence>) {
+
     }
 }

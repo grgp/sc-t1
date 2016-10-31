@@ -15,14 +15,14 @@ import aima.core.logic.propositional.parsing.ast.PropositionSymbol;
 /**
  * Artificial Intelligence A Modern Approach (3rd Edition): page 263.<br>
  * <br>
- * 
+ *
  * <pre>
  * <code>
  * function WALKSAT(clauses, p, max_flips) returns a satisfying model or failure
  *   inputs: clauses, a set of clauses in propositional logic
  *           p, the probability of choosing to do a "random walk" move, typically around 0.5
  *           max_flips, number of flips allowed before giving up
- *           
+ *
  *   model <- a random assignment of true/false to the symbols in clauses
  *   for i = 1 to max_flips do
  *       if model satisfies clauses then return model
@@ -32,10 +32,10 @@ import aima.core.logic.propositional.parsing.ast.PropositionSymbol;
  *   return failure
  * </code>
  * </pre>
- * 
+ *
  * Figure 7.18 The WALKSAT algorithm for checking satisfiability by randomly
  * flipping the values of variables. Many versions of the algorithm exist.
- * 
+ *
  * @author Ciaran O'Reilly
  * @author Ravi Mohan
  * @author Mike Stampone
@@ -44,7 +44,7 @@ public class WalkSAT {
 
 	/**
 	 * WALKSAT(clauses, p, max_flips)<br>
-	 * 
+	 *
 	 * @param clauses
 	 *            a set of clauses in propositional logic
 	 * @param p
@@ -53,12 +53,12 @@ public class WalkSAT {
 	 * @param maxFlips
 	 *            number of flips allowed before giving up. Note: a value < 0 is
 	 *            interpreted as infinity.
-	 * 
+	 *
 	 * @return a satisfying model or failure (null).
 	 */
 	public Model walkSAT(Set<Clause> clauses, double p, int maxFlips) {
 		assertLegalProbability(p);
-		
+
 		// model <- a random assignment of true/false to the symbols in clauses
 		Model model = randomAssignmentToSymbolsInClauses(clauses);
 		// for i = 1 to max_flips do (Note: maxFlips < 0 means infinity)
@@ -101,7 +101,7 @@ public class WalkSAT {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param random
 	 *            the random generator to be used by the algorithm.
 	 */
@@ -117,7 +117,7 @@ public class WalkSAT {
 			throw new IllegalArgumentException("p is not a legal propbability value [0-1]: "+p);
 		}
 	}
-	
+
 	protected Model randomAssignmentToSymbolsInClauses(Set<Clause> clauses) {
 		// Collect the symbols in clauses
 		Set<PropositionSymbol> symbols = new LinkedHashSet<PropositionSymbol>();
