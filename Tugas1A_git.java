@@ -63,7 +63,7 @@ public class Tugas1A_git {
     } else if (strategy.equals("dls")) {
         DepthLimitedSearch dls = new DepthLimitedSearch(3);
         listOfActions = dls.search(problem);
-    } else if (strategy.equals("astar")) {
+    } else if (strategy.equals("a*")) {
         GraphSearch impl = new GraphSearch();
         AStarSearch astar = new AStarSearch(impl, new JarvisHeuristicFunction());
         listOfActions = astar.search(problem);
@@ -77,9 +77,9 @@ public class Tugas1A_git {
     }
 
     } catch (Exception ex) {
-		    ex.printStackTrace();
+	    ex.printStackTrace();
         System.exit(0);
-	  }
+	}
 
   }
 }

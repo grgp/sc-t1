@@ -2,6 +2,7 @@ import java.util.Scanner;
 import java.util.Objects;
 import java.util.Set;
 import java.util.HashSet;
+import java.lang.Math;
 import aima.core.agent.Action;
 import aima.core.search.framework.problem.Problem;
 import aima.core.search.uninformed.IterativeDeepeningSearch;
@@ -43,6 +44,27 @@ class State {
         } return null;
     }
 
+    public double getShortestItemDistance() {
+        double min = Integer.MAX_VALUE;
+        Point pt = null;
+        for (Point p2 : items) {
+            double tmp_distance = getManhattanDistance(p2);
+            if (tmp_distance < min) {
+                pt = p2;
+                min = tmp_distance;
+            }
+        }
+        System.out.println("min distance from " + t_location + " is: " + min + " on point " + pt);
+        return min;
+    }
+
+    // get the shortest manhattan distance between
+    //     current location and all other items
+    public double getManhattanDistance(Point p2) {
+        return Math.abs(t_location.x-p2.x) + Math.abs(t_location.y-p2.y);
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -54,10 +76,9 @@ class State {
         }
     }
 
-    // get the shortest manhattan distance between
-    //     current location and all other items
-    public double getShortestManhattanDistance() {
-        return 0;
+    @Override
+    public int hashCode() {
+        return Objects.hash(rows, cols, obstacles, items, t_location);
     }
 
 }
@@ -90,13 +111,9 @@ class Point {
         }
     }
 
-    // public boolean equals(Object obj){
-    //   if (obj instanceof Point){
-    //       Point toCompare = (Point) obj;
-    //       return this.x.equals(toCompare.x) && this.y.equals(toCompare.y);
-    //   }
-    //   return false;
-    // }
+    public String toString() {
+        return "(" + x + ", " + y + ")";
+    }
 
     @Override
     public int hashCode() {

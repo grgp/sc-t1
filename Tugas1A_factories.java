@@ -140,7 +140,7 @@ class JarvisHeuristicFunction implements HeuristicFunction {
     public double h (Object s) {
         if (s instanceof State) {
             State state = (State) s;
-            return state.getShortestManhattanDistance();
+            return state.getShortestItemDistance();
         } else {
             return 0;
         }
