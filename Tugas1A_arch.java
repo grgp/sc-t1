@@ -105,6 +105,12 @@ class Point {
 
 }
 
+class Distance extends Point {
+    public Distance(int x, int y) {
+        super(x, y);
+    }
+}
+
 class ActionTony implements Action {
     String direction;
     int offsetX;

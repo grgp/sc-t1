@@ -42,6 +42,9 @@ public class Tugas1B_it1 {
                 }
             }
 
+            SudokuSentenceBuilder scb = new SudokuSentenceBuilder(dimension, sf.symbols);
+            System.out.println(scb.cellSatifiesSudoku());
+
             Model model = new Model(values);
             System.out.println(model);
 
