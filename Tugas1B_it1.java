@@ -87,20 +87,4 @@ class SudokuFactory {
         return row_symbols;
     }
 
-    // public void assignValuesInOrder(int row) {
-    //     Scanner sc = new Scanner(System.in);
-    //     Map<PropositionSymbol, Boolean> values = new HashMap<PropositionSymbol, Boolean>();
-    //
-    //     for (Map.Entry<PropositionSymbol, Boolean> entry : values.entrySet()) {
-    //         System.out.println(entry.getKey() + "/" + entry.getValue());
-    //     }
-    //     for (PropositionSymbol symbol : symbols) {
-    //         System.out.print(symbol.getSymbol() + ": ");
-    //         if (sc.nextLine().equals("true")) {
-    //             values.put(symbol, true);
-    //         }
-    //     }
-    //     this.model = new Model(values);
-    // }
-
 }
