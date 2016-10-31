@@ -43,7 +43,7 @@ class SudokuFactory {
 
     private void cellSatifiesSudoku() {
         cellAtLeastOne();
-        cellUniqueInRows();
+        cellUniqueInRowsCols();
     }
 
     private void cellAtLeastOne() {
@@ -51,8 +51,7 @@ class SudokuFactory {
             for (int col = 1; col <= dimension; col++) {
                 ArrayList<Sentence> for_each_cell = new ArrayList<Sentence>();
                 for (int value = 1; value <= dimension; value++) {
-                    String key = "x"+row+"y"+col+"z"+value;
-                    for_each_cell.add(symbols.get(key));
+                    for_each_cell.add(symbols.get("x"+row+"y"+col+"z"+value));
                 }
                 Sentence sc = Sentence.newDisjunction(for_each_cell);
                 kb.tell(sc);
@@ -60,35 +59,56 @@ class SudokuFactory {
         }
     }
 
-    private void cellUniqueInRows() {
+    private void cellUniqueInRowsCols() {
         for (int index = 1; index <= this.dimension; index++) {
             ComplexSentence unique_row = eachCellUniqueInRow(index);
+            ComplexSentence unique_col = eachCellUniqueInCol(index);
             kb.tell(unique_row);
+            kb.tell(unique_col);
         }
     }
 
-    private ComplexSentence eachCellUniqueInRow(int row_index) {
+    private ComplexSentence eachCellUniqueInRow(int index) {
         ComplexSentence row = null;
         for (int value = 1; value <= dimension; value++) {
-            for (int cell = 1; cell <= dimension; cell++) {
-                String key = "x"+row_index+"y"+cell+"z"+value;
+            for (int cell = 1; cell < dimension; cell++) {
                 ComplexSentence cs1 = new ComplexSentence(Connective.NOT,
-                            symbols.get("x"+row_index+"y"+cell+"z"+value));
-                ComplexSentence cs2 = new ComplexSentence(Connective.NOT,
-                            symbols.get("x"+row_index+"y"+((cell%dimension)+1)+"z"+value));
-                ComplexSentence csDisj = new ComplexSentence(cs1, Connective.OR, cs2);
+                            symbols.get("x"+index+"y"+cell+"z"+value));
 
-                if (row == null) {
-                    row = csDisj;
-                } else {
-                    row = new ComplexSentence(row, Connective.AND, csDisj);
+                for (int comparedCell = cell+1; comparedCell <= dimension; comparedCell++) {
+                    ComplexSentence cs2 = new ComplexSentence(Connective.NOT,
+                                symbols.get("x"+index+"y"+comparedCell+"z"+value));
+                    ComplexSentence csDisj = new ComplexSentence(cs1, Connective.OR, cs2);
+
+                    if (row == null) {
+                        row = csDisj;
+                    } else {
+                        row = new ComplexSentence(row, Connective.AND, csDisj);
+                    }
                 }
             }
         }
         return row;
     }
 
-    // private ComplexSentence mergeConjunction(ArrayList<ComplexSentence> all_specs) {
-    //     mergeConjunction()
-    // }
+    private ComplexSentence eachCellUniqueInCol(int index) {
+        ComplexSentence col = null;
+        for (int value = 1; value <= dimension; value++) {
+            for (int cell = 1; cell < dimension; cell++) {
+                ComplexSentence cs1 = new ComplexSentence(Connective.NOT,
+                            symbols.get("x"+cell+"y"+index+"z"+value));
+                ComplexSentence cs2 = new ComplexSentence(Connective.NOT,
+                            symbols.get("x"+(cell+1)+"y"+index+"z"+value));
+                ComplexSentence csDisj = new ComplexSentence(cs1, Connective.OR, cs2);
+
+                if (col == null) {
+                    col = csDisj;
+                } else {
+                    col = new ComplexSentence(col, Connective.AND, csDisj);
+                }
+            }
+        }
+        return col;
+    }
+
 }
