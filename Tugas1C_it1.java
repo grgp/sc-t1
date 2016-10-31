@@ -63,7 +63,7 @@ public class Tugas1C_it1 {
                 for (int val = 1; val <= sf.dimension; val++) {
                     String key = "x"+row+"y"+col+"z"+val;
                     if (model.getValue(sf.symbols.get(key))) {
-                        System.out.print(key + " ");
+                        System.out.print(val + " ");
                     }
                 }
             }

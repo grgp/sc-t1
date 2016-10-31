@@ -70,12 +70,12 @@ class SudokuFactory {
     private ComplexSentence eachCellUniqueInRow(int row_index) {
         ComplexSentence row = null;
         for (int value = 1; value <= dimension; value++) {
-            for (int cell = 1; cell < dimension; cell++) {
+            for (int cell = 1; cell <= dimension; cell++) {
                 String key = "x"+row_index+"y"+cell+"z"+value;
                 ComplexSentence cs1 = new ComplexSentence(Connective.NOT,
-                            symbols.get(key));
+                            symbols.get("x"+row_index+"y"+cell+"z"+value));
                 ComplexSentence cs2 = new ComplexSentence(Connective.NOT,
-                            symbols.get(key));
+                            symbols.get("x"+row_index+"y"+((cell%dimension)+1)+"z"+value));
                 ComplexSentence csDisj = new ComplexSentence(cs1, Connective.OR, cs2);
 
                 if (row == null) {
