@@ -13,19 +13,21 @@ import java.util.Scanner;
 import aima.core.logic.propositional.inference.DPLL;
 import aima.core.logic.propositional.inference.DPLLSatisfiable;
 import aima.core.logic.propositional.inference.OptimizedDPLL;
+import aima.core.logic.propositional.kb.data.Literal;
+import aima.core.logic.propositional.kb.data.Clause;
 
 public class SentencesTest {
     public static void main (String[] args) {
         Map<PropositionSymbol, Boolean> values = new HashMap<PropositionSymbol, Boolean>();
-        PropositionSymbol aa = new PropositionSymbol("A");
-        PropositionSymbol bb = new PropositionSymbol("B");
-        PropositionSymbol cc = new PropositionSymbol("C");
-        PropositionSymbol dd = new PropositionSymbol("D");
+        Literal aa = new Literal(new PropositionSymbol("A"));
+        Literal bb = new Literal(new PropositionSymbol("B"));
+        Literal cc = new Literal(new PropositionSymbol("C"));
+        Literal dd = new Literal(new PropositionSymbol("D"));
         ComplexSentence complex = new ComplexSentence(Connective.OR, aa, bb);
         ComplexSentence complex2 = new ComplexSentence(Connective.AND, cc, dd);
         ComplexSentence complex3 = new ComplexSentence(Connective.OR, complex, complex2);
         DPLLSatisfiable dpls = new DPLLSatisfiable();
-        
+
         Scanner sc = new Scanner(System.in);
         values.put(aa, true);
         values.put(bb, false);
