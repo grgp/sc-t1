@@ -33,7 +33,7 @@ public class Tugas1B_it1 {
             int dimension = Integer.parseInt(sc.nextLine());
 
             SudokuFactory sf = new SudokuFactory(dimension);
-            System.out.println(sf.symbols);
+            // System.out.println(sf.symbols);
             System.out.println("Symbols count: "+ sf.symbols.size());
 
             int[][] data = new int[dimension][dimension];
@@ -42,27 +42,29 @@ public class Tugas1B_it1 {
             for (int row = 1; row <= dimension; row++) {
                 for (int col = 1; col <= dimension; col++) {
                     int val = sc.nextInt();
-                    if (val >= 1 && val <= 9) {
-                        String key = "x"+row+"y"+col+"z"+val;
+                    String key = "x"+row+"y"+col+"z"+val;
+                    if (val >= 1 && val <= dimension) {
                         values.put(sf.symbols.get(key), true);
+                    } else if (val == 0) {
+                        values.put(sf.symbols.get(key), false);
                     }
                 }
             }
 
             sf.model = new Model(values);
-            System.out.println(sf.cellSatifiesSudoku());
+            // System.out.println(sf.cellSatifiesSudoku());
             System.out.println("initial model: \n"+ sf.model);
 
             ConvertToConjunctionOfClauses ctcc = new ConvertToConjunctionOfClauses();
             ConjunctionOfClauses coc = ctcc.convert(sf.cellSatifiesSudoku());
-            System.out.println("\n-----\nConjunction of Clauses:\n"+coc);
+            //System.out.println("\n-----\nConjunction of Clauses:\n"+coc);
             WalkSATModified ws = new WalkSATModified();
-            System.out.println("");
+            // System.out.println("");
             Model newerModel = ws.walkSAT(coc.getClauses(), 0.5, -1, sf.model);
 
             OptimizedDPLL odp = new OptimizedDPLL();
 
-            System.out.println("\nnewerModel: \n\n"+newerModel);
+            // System.out.println("\nnewerModel: \n\n"+newerModel);
 
 
         } catch (Exception ex) {
@@ -77,9 +79,12 @@ class WalkSATModified extends WalkSAT {
 		assertLegalProbability(p);
 
 		// for i = 1 to max_flips do (Note: maxFlips < 0 means infinity)
+        // model = randomAssignmentToSymbolsInClauses(clauses);
+        // System.out.println("random model: " + model);
 		for (int i = 0; i < maxFlips || maxFlips < 0; i++) {
 			// if model satisfies clauses then return model
 			if (model.satisfies(clauses)) {
+                System.out.println("yes it actually satisfies");
 				return model;
 			}
 
@@ -107,13 +112,16 @@ class WalkSATModified extends WalkSAT {
 
     protected Clause randomlySelectFalseClause(Set<Clause> clauses, Model model) {
 		// Collect the clauses that are false in the model
-        System.out.println("clauses size: "+clauses.size());
-        System.out.println("----\nClauses in randomly:\n"+clauses);
+        // System.out.println("clauses size: "+clauses.size());
+        // System.out.println("----\nClauses in randomly:\n"+clauses);
 		List<Clause> falseClauses = new ArrayList<Clause>();
 		for (Clause c : clauses) {
 			if (Boolean.FALSE.equals(model.determineValue(c))) {
 				falseClauses.add(c);
-			}
+                System.out.println("---false: " + c + " ---");
+			} else {
+                System.out.println("---true : " + c + " ---");
+            }
 		}
         System.out.println("falsecla size: "+falseClauses.size());
 
