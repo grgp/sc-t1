@@ -42,7 +42,22 @@ class SudokuFactory {
     }
 
     private void cellSatifiesSudoku() {
+        cellAtLeastOne();
         cellUniqueInRows();
+    }
+
+    private void cellAtLeastOne() {
+        for (int row = 1; row <= dimension; row++) {
+            for (int col = 1; col <= dimension; col++) {
+                ArrayList<Sentence> for_each_cell = new ArrayList<Sentence>();
+                for (int value = 1; value <= dimension; value++) {
+                    String key = "x"+row+"y"+col+"z"+value;
+                    for_each_cell.add(symbols.get(key));
+                }
+                Sentence sc = Sentence.newDisjunction(for_each_cell);
+                kb.tell(sc);
+            }
+        }
     }
 
     private void cellUniqueInRows() {
@@ -55,11 +70,12 @@ class SudokuFactory {
     private ComplexSentence eachCellUniqueInRow(int row_index) {
         ComplexSentence row = null;
         for (int value = 1; value <= dimension; value++) {
-            for (int cell = 1; cell <= dimension; cell++) {
+            for (int cell = 1; cell < dimension; cell++) {
+                String key = "x"+row_index+"y"+cell+"z"+value;
                 ComplexSentence cs1 = new ComplexSentence(Connective.NOT,
-                            symbols.get("x"+row_index+"y"+cell+"z"+value));
+                            symbols.get(key));
                 ComplexSentence cs2 = new ComplexSentence(Connective.NOT,
-                            symbols.get("x"+row_index+"y"+((cell%dimension)+1)+"z"+value));
+                            symbols.get(key));
                 ComplexSentence csDisj = new ComplexSentence(cs1, Connective.OR, cs2);
 
                 if (row == null) {
