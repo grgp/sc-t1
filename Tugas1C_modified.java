@@ -19,12 +19,6 @@ import aima.core.logic.propositional.inference.DPLL;
 import aima.core.logic.propositional.inference.DPLLSatisfiable;
 import aima.core.logic.propositional.inference.OptimizedDPLL;
 
-public class Tugas1C_modified {
-    public static void main(String[] args) {
-
-    }
-}
-
 class ModifiedDPLL extends OptimizedDPLL {
     Model model;
 

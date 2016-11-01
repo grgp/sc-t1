@@ -22,9 +22,9 @@ import java.util.Random;
 public class Tugas1C_it1 {
     public static void main(String[] args) {
         try {
-            if (args.length > 1) {
-                Debugger db = new Debugger(args[1]);
-                db.log("yo wassup");
+            Debugger db = new Debugger();
+            if (args.length > 1 && args[1].equals("debug")) {
+                db.toggleDebugging();
             }
             Scanner sc = new Scanner(System.in);
             int dimension = Integer.parseInt(sc.nextLine());
@@ -43,7 +43,7 @@ public class Tugas1C_it1 {
                 ns += "\n";
             }
 
-            System.out.println("number of clauses: " + sf.kb.asCNF().size());
+            db.log("number of clauses: " + sf.kb.asCNF().size());
 
             if (args[0].equals("walksat")) {
                 WalkSAT ws = new WalkSAT();

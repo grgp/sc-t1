@@ -14,9 +14,6 @@ import aima.core.logic.propositional.parsing.ast.PropositionSymbol;
 import aima.core.logic.propositional.kb.data.Literal;
 import aima.core.logic.propositional.kb.data.Clause;
 
-public class Tugas1C_factories {
-}
-
 class SudokuFactory {
     final int dimension;
     final int box_dimension;
@@ -28,7 +25,6 @@ class SudokuFactory {
         this.symbols = generateSymbols();
         this.kb = new KnowledgeBase();
         this.box_dimension = (int) Math.sqrt(dimension);
-        System.out.println("bd: " + box_dimension);
         cellSatifiesSudoku();
     }
 
@@ -159,17 +155,17 @@ class SudokuFactory {
 class Debugger {
     private boolean enabled;
 
-    public Debugger(String enabled) {
-        if (enabled.equals("db")) {
-            this.enabled = true;
-        } else {
-            this.enabled = false;
-        }
+    public Debugger() {
+        this.enabled = false;
     }
 
-    public void log(Object o) {
+    public void toggleDebugging() {
+        this.enabled = !this.enabled;
+    }
+
+    public void log(String s) {
         if (enabled) {
-            System.out.println(o.toString());
+            System.out.println(s);
         }
     }
 }

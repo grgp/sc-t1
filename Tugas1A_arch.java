@@ -7,10 +7,6 @@ import aima.core.agent.Action;
 import aima.core.search.framework.problem.Problem;
 import aima.core.search.uninformed.IterativeDeepeningSearch;
 
-public class Tugas1A_arch {
-
-}
-
 class State {
     final int rows;
     final int cols;

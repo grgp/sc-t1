@@ -13,10 +13,6 @@ import aima.core.search.framework.Node;
 import java.util.Queue;
 import java.util.PriorityQueue;
 
-public class Tugas1A_factories {
-
-}
-
 class JarvisActionsFunction implements ActionsFunction {
     State currentState;
 
