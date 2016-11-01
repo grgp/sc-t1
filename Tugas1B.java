@@ -1,3 +1,13 @@
+/**
+ * @author: George Albert
+ * @author_npm: 1406569781
+ * @class: Sistem Cerdas A
+ */
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.HashMap;
@@ -11,22 +21,34 @@ import aima.core.logic.propositional.kb.data.Model;
 import aima.core.logic.propositional.inference.DPLL;
 import aima.core.logic.propositional.inference.DPLLSatisfiable;
 import aima.core.logic.propositional.inference.OptimizedDPLL;
-import aima.core.logic.propositional.kb.data.Literal;
-import aima.core.logic.propositional.kb.data.Clause;
-
-import aima.core.logic.propositional.visitors.ConvertToConjunctionOfClauses;
 import aima.core.logic.propositional.inference.WalkSAT;
-import aima.core.logic.propositional.kb.data.ConjunctionOfClauses;
-import java.util.Random;
 
 public class Tugas1B {
     public static void main(String[] args) {
         try {
             Debugger db = new Debugger();
-            if (args.length > 1 && args[1].equals("debug")) {
+            if (args.length > 3 && args[4].equals("debug")) {
                 db.toggleDebugging();
             }
-            Scanner sc = new Scanner(System.in);
+
+            // initialize I/O
+            Scanner sc = null;
+            PrintWriter pw = null;
+            String output_filename = "";
+            if (args.length >= 3) {
+                File input_file = new File(args[1]);
+                sc = new Scanner(input_file);
+                output_filename = args[2];
+
+                File output_file = new File(output_filename);
+                FileWriter fw = new FileWriter(output_file);
+                pw = new PrintWriter(fw);
+
+            } else {
+                System.out.println("Error: Missing arguments for program");
+                System.exit(0);
+            }
+
             int dimension = Integer.parseInt(sc.nextLine());
             SudokuFactory sf = new SudokuFactory(dimension);
 
@@ -48,39 +70,46 @@ public class Tugas1B {
             if (args[0].equals("walksat")) {
                 WalkSAT ws = new WalkSAT();
                 Model model = ws.walkSAT(sf.kb.asCNF(), 0.5, -1);
-                printSudokuModel(sf, model);
+                printSudokuModel(sf, model, pw);
             } else if (args[0].equals("dpll")) {
                 ModifiedRegularDPLL dpll = new ModifiedRegularDPLL();
                 boolean b = dpll.dpllModified(sf.kb);
                 Model model = dpll.model;
-                printSudokuModel(sf, model);
+                printSudokuModel(sf, model, pw);
             } else if (args[0].equals("dpllmod")) {
                 ModifiedOptimizedDPLL dpll = new ModifiedOptimizedDPLL();
                 boolean b = dpll.dpllModified(sf.kb);
                 Model model = dpll.model;
-                printSudokuModel(sf, model);
+                printSudokuModel(sf, model, pw);
             }
 
+            pw.close();
         } catch (Exception ex) {
             ex.printStackTrace();
             System.exit(0);
         }
     }
 
-    private static void printSudokuModel(SudokuFactory sf, Model model) {
-        for (int row = 1; row <= sf.dimension; row++) {
-            for (int col = 1; col <= sf.dimension; col++) {
-                for (int val = 1; val <= sf.dimension; val++) {
-                    String key = "x"+row+"y"+col+"z"+val;
-                    if (model == null) System.out.println("Error: Model is null");
-                    if (model.getValue(sf.symbols.get(key)) == null) {
-                        System.out.print("_ ");
-                    } else if (model.getValue(sf.symbols.get(key))) {
-                        System.out.print(val + " ");
+    private static void printSudokuModel(SudokuFactory sf, Model model,
+                                         PrintWriter pw) {
+        try {
+            for (int row = 1; row <= sf.dimension; row++) {
+                for (int col = 1; col <= sf.dimension; col++) {
+                    for (int val = 1; val <= sf.dimension; val++) {
+                        String key = "x"+row+"y"+col+"z"+val;
+                        if (model == null) pw.println("Error: Model is null");
+                        if (model.getValue(sf.symbols.get(key)) == null) {
+                            pw.print("_ ");
+                        } else if (model.getValue(sf.symbols.get(key))) {
+                            pw.print(val + " ");
+                        }
                     }
                 }
+                pw.println();
             }
-            System.out.println();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.exit(0);
         }
     }
 }

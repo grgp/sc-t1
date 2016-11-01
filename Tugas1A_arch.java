@@ -1,3 +1,11 @@
+/**
+ * @author: George Albert
+ * @author_npm: 1406569781
+ * @class: Sistem Cerdas A
+ *
+ * A collection of classes containing the architecture neccessary for the search.
+ */
+
 import java.util.Scanner;
 import java.util.Objects;
 import java.util.Set;

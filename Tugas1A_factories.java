@@ -1,3 +1,12 @@
+/**
+ * @author: George Albert
+ * @author_npm: 1406569781
+ * @class: Sistem Cerdas A
+ *
+ * A collection of classes containing functions used for the Problem
+ * definition in main.
+ */
+
 import java.util.Set;
 import java.util.HashSet;
 import aima.core.agent.Action;
@@ -51,10 +60,11 @@ class JarvisActionsFunction implements ActionsFunction {
              inRange("y-axis", checkY) ) {
             Point tempPoint = new Point(checkX, checkY);
             if ( !currentState.obstacles.contains(tempPoint) ) {
-            //    System.out.println("From: " + currentState.t_location.x + " " + currentState.t_location.y);
-            //    System.out.println("To: " + tempPoint.x + " " + tempPoint.y + " | dir: " + direction);
-            //    System.out.println("                        >>> " + direction);
-               return true;
+            //  Uncomment the three lines below for debugging:
+            //  System.out.println("From: " + currentState.t_location.x + " " + currentState.t_location.y);
+            //  System.out.println("To: " + tempPoint.x + " " + tempPoint.y + " | dir: " + direction);
+            //  System.out.println("                        >>> " + direction);
+                return true;
             }
             return false;
         } else {

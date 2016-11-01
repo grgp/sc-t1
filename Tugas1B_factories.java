@@ -1,3 +1,9 @@
+/**
+ * @author: George Albert
+ * @author_npm: 1406569781
+ * @class: Sistem Cerdas A
+ */
+
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.HashMap;

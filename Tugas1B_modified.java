@@ -1,3 +1,9 @@
+/**
+ * @author: George Albert
+ * @author_npm: 1406569781
+ * @class: Sistem Cerdas A
+ */
+
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ArrayList;
