@@ -26,7 +26,7 @@ public class Tugas1C_it1 {
             int dimension = Integer.parseInt(sc.nextLine());
 
             SudokuFactory sf = new SudokuFactory(dimension);
-            System.out.println("KB after initialize: \n" + sf.kb);
+            // System.out.println("KB after initialize: \n" + sf.kb);
 
             String ns = "";
             for (int row = 1; row <= dimension; row++) {
@@ -41,15 +41,20 @@ public class Tugas1C_it1 {
                 ns += "\n";
             }
 
-            System.out.println("KB after input: \n" + sf.kb);
-            System.out.println("ns: \n" + ns);
+            System.out.println("number of clauses: " + sf.kb.asCNF().size());
 
-            WalkSAT ws = new WalkSAT();
-            Model model = ws.walkSAT(sf.kb.asCNF(), 0.5, -1);
-            System.out.println("walkSAT: ");
-            printSudokuModel(sf, model);
-
-            OptimizedDPLL odp = new OptimizedDPLL();
+            if (args[0].equals("walksat")) {
+                WalkSAT ws = new WalkSAT();
+                Model model = ws.walkSAT(sf.kb.asCNF(), 0.5, 10000);
+                printSudokuModel(sf, model);
+            } else {
+                // ModifiedOptimizedDPLL dpll = new ModifiedOptimizedDPLL();
+                // Model model = dpll.dpll(sf.kb.asCNF(), sf.symbols, new Model(), false);
+                ModifiedDPLL dpll = new ModifiedDPLL();
+                boolean b = dpll.dpllModified(sf.kb);
+                Model model = dpll.model;
+                printSudokuModel(sf, model);
+            }
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -62,7 +67,10 @@ public class Tugas1C_it1 {
             for (int col = 1; col <= sf.dimension; col++) {
                 for (int val = 1; val <= sf.dimension; val++) {
                     String key = "x"+row+"y"+col+"z"+val;
-                    if (model.getValue(sf.symbols.get(key))) {
+                    // if (model == null) System.out.println("hey model is null");
+                    if (model.getValue(sf.symbols.get(key)) == null) {
+                        System.out.print("_ ");
+                    } else if (model.getValue(sf.symbols.get(key))) {
                         System.out.print(val + " ");
                     }
                 }

@@ -97,16 +97,32 @@ class SudokuFactory {
             for (int cell = 1; cell < dimension; cell++) {
                 ComplexSentence cs1 = new ComplexSentence(Connective.NOT,
                             symbols.get("x"+cell+"y"+index+"z"+value));
-                ComplexSentence cs2 = new ComplexSentence(Connective.NOT,
-                            symbols.get("x"+(cell+1)+"y"+index+"z"+value));
-                ComplexSentence csDisj = new ComplexSentence(cs1, Connective.OR, cs2);
 
-                if (col == null) {
-                    col = csDisj;
-                } else {
-                    col = new ComplexSentence(col, Connective.AND, csDisj);
+                for (int comparedCell = cell+1; comparedCell <= dimension; comparedCell++) {
+                    ComplexSentence cs2 = new ComplexSentence(Connective.NOT,
+                                symbols.get("x"+comparedCell+"y"+index+"z"+value));
+                    ComplexSentence csDisj = new ComplexSentence(cs1, Connective.OR, cs2);
+
+                    if (col == null) {
+                        col = csDisj;
+                    } else {
+                        col = new ComplexSentence(col, Connective.AND, csDisj);
+                    }
                 }
             }
+            // for (int cell = 1; cell < dimension; cell++) {
+            //     ComplexSentence cs1 = new ComplexSentence(Connective.NOT,
+            //                 symbols.get("x"+cell+"y"+index+"z"+value));
+            //     ComplexSentence cs2 = new ComplexSentence(Connective.NOT,
+            //                 symbols.get("x"+(cell+1)+"y"+index+"z"+value));
+            //     ComplexSentence csDisj = new ComplexSentence(cs1, Connective.OR, cs2);
+            //
+            //     if (col == null) {
+            //         col = csDisj;
+            //     } else {
+            //         col = new ComplexSentence(col, Connective.AND, csDisj);
+            //     }
+            // }
         }
         return col;
     }
