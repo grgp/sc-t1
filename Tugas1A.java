@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.HashSet;
@@ -10,16 +11,26 @@ import aima.core.search.uninformed.DepthLimitedSearch;
 import aima.core.search.informed.AStarSearch;
 import aima.core.search.framework.qsearch.GraphSearch;
 
-public class Tugas1A_git {
-  public static void main(String[] args) {
+public class Tugas1A {
+    public static void main(String[] args) {
     String strategy = args[0];
 
     int rows = 0, cols = 0, t_initial_row = 0, t_initial_col = 0;
     String tmp[], item_locations[], obst_locations[];
 
+    // avoid exceptions caused by I/O, shouldn't be a problem if
+    //     the input is valid
     try {
+        Scanner input = null;
 
-    	Scanner input = new Scanner(System.in);
+        // if input and output file is in args[]
+        if (args.length >= 3) {
+            File file = new File(args[1]);
+            input = new Scanner(file);
+        } else { // if user chooses to enter the input manually
+            input = new Scanner(System.in);
+        }
+
         tmp = input.nextLine().split(",");
         rows = Integer.parseInt(tmp[0]);
         cols = Integer.parseInt(tmp[1]);
@@ -52,21 +63,28 @@ public class Tugas1A_git {
         JarvisActionsFunction actionsFunction = new JarvisActionsFunction();
         JarvisResultFunction resultFunction = new JarvisResultFunction();
         JarvisGoalTest goalTest = new JarvisGoalTest();
+        JarvisStepCostFunction stepCostFunction = new JarvisStepCostFunction();
 
-        System.out.println("Starting search");
-        Problem problem = new Problem(newState, actionsFunction, resultFunction, goalTest);
+        // System.out.println("Starting search");
+        Problem problem = new Problem(newState, actionsFunction, resultFunction, goalTest, stepCostFunction);
         List<Action> listOfActions = new ArrayList<Action>();
 
         if (strategy.equals("ids")) {
             IterativeDeepeningSearch ids = new IterativeDeepeningSearch();
             listOfActions = ids.search(problem);
+            System.out.println("Node expanded: "+ ids.getMetrics().getInt("nodesExpanded"));
+            System.out.println("Path cost: "+ ids.getMetrics().getDouble("pathCost"));
         } else if (strategy.equals("dls")) {
             DepthLimitedSearch dls = new DepthLimitedSearch(3);
             listOfActions = dls.search(problem);
+            System.out.println("Node expanded: "+ dls.getMetrics().getInt("nodesExpanded"));
+            System.out.println("Path cost: "+ dls.getMetrics().getDouble("pathCost"));
         } else if (strategy.equals("a*")) {
             GraphSearch impl = new GraphSearch();
             AStarSearch astar = new AStarSearch(impl, new JarvisHeuristicFunction());
             listOfActions = astar.search(problem);
+            System.out.println("Node expanded: "+ astar.getMetrics().getInt("nodesExpanded"));
+            System.out.println("Path cost: "+ astar.getMetrics().getDouble("pathCost"));
         }
 
         for (Action action : listOfActions) {
@@ -77,9 +95,9 @@ public class Tugas1A_git {
         }
 
     } catch (Exception ex) {
-	    ex.printStackTrace();
+        ex.printStackTrace();
         System.exit(0);
-	}
+    }
 
-  }
+    }
 }

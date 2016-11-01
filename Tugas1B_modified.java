@@ -19,7 +19,58 @@ import aima.core.logic.propositional.inference.DPLL;
 import aima.core.logic.propositional.inference.DPLLSatisfiable;
 import aima.core.logic.propositional.inference.OptimizedDPLL;
 
-class ModifiedDPLL extends OptimizedDPLL {
+class ModifiedRegularDPLL extends DPLLSatisfiable {
+    Model model;
+
+    public boolean dpllModified(KnowledgeBase kb) {
+        Set<Clause> clauses = kb.asCNF();
+        List<PropositionSymbol> symbols = new ArrayList<PropositionSymbol>(kb.getSymbols());
+        return dpll(clauses, symbols, new Model());
+    }
+
+    @Override
+    public boolean dpll(Set<Clause> clauses, List<PropositionSymbol> symbols,
+            Model model) {
+        // if every clause in clauses is true in model then return true
+        if (everyClauseTrue(clauses, model)) {
+            this.model = model;
+            return true;
+        }
+        // if some clause in clauses is false in model then return false
+        if (someClauseFalse(clauses, model)) {
+            return false;
+        }
+
+        // P, value <- FIND-PURE-SYMBOL(symbols, clauses, model)
+        Pair<PropositionSymbol, Boolean> pAndValue = findPureSymbol(symbols,
+                clauses, model);
+        // if P is non-null then
+        if (pAndValue != null) {
+            // return DPLL(clauses, symbols - P, model U {P = value})
+            return dpll(clauses, minus(symbols, pAndValue.getFirst()),
+                    model.union(pAndValue.getFirst(), pAndValue.getSecond()));
+        }
+
+        // P, value <- FIND-UNIT-CLAUSE(clauses, model)
+        pAndValue = findUnitClause(clauses, model);
+        // if P is non-null then
+        if (pAndValue != null) {
+            // return DPLL(clauses, symbols - P, model U {P = value})
+            return dpll(clauses, minus(symbols, pAndValue.getFirst()),
+                    model.union(pAndValue.getFirst(), pAndValue.getSecond()));
+        }
+
+        // P <- FIRST(symbols); rest <- REST(symbols)
+        PropositionSymbol p = Util.first(symbols);
+        List<PropositionSymbol> rest = Util.rest(symbols);
+        // return DPLL(clauses, rest, model U {P = true}) or
+        // ...... DPLL(clauses, rest, model U {P = false})
+        return dpll(clauses, rest, model.union(p, true))
+                || dpll(clauses, rest, model.union(p, false));
+    }
+}
+
+class ModifiedOptimizedDPLL extends OptimizedDPLL {
     Model model;
 
     public boolean dpllModified(KnowledgeBase kb) {
@@ -99,56 +150,5 @@ class ModifiedDPLL extends OptimizedDPLL {
             this.model = model;
         }
         return result;
-    }
-}
-
-class ModifiedRegularDPLL extends DPLLSatisfiable {
-    Model model;
-
-    public boolean dpllModified(KnowledgeBase kb) {
-        Set<Clause> clauses = kb.asCNF();
-        List<PropositionSymbol> symbols = new ArrayList<PropositionSymbol>(kb.getSymbols());
-        return dpll(clauses, symbols, new Model());
-    }
-
-    @Override
-    public boolean dpll(Set<Clause> clauses, List<PropositionSymbol> symbols,
-            Model model) {
-        // if every clause in clauses is true in model then return true
-        if (everyClauseTrue(clauses, model)) {
-            this.model = model;
-            return true;
-        }
-        // if some clause in clauses is false in model then return false
-        if (someClauseFalse(clauses, model)) {
-            return false;
-        }
-
-        // P, value <- FIND-PURE-SYMBOL(symbols, clauses, model)
-        Pair<PropositionSymbol, Boolean> pAndValue = findPureSymbol(symbols,
-                clauses, model);
-        // if P is non-null then
-        if (pAndValue != null) {
-            // return DPLL(clauses, symbols - P, model U {P = value})
-            return dpll(clauses, minus(symbols, pAndValue.getFirst()),
-                    model.union(pAndValue.getFirst(), pAndValue.getSecond()));
-        }
-
-        // P, value <- FIND-UNIT-CLAUSE(clauses, model)
-        pAndValue = findUnitClause(clauses, model);
-        // if P is non-null then
-        if (pAndValue != null) {
-            // return DPLL(clauses, symbols - P, model U {P = value})
-            return dpll(clauses, minus(symbols, pAndValue.getFirst()),
-                    model.union(pAndValue.getFirst(), pAndValue.getSecond()));
-        }
-
-        // P <- FIRST(symbols); rest <- REST(symbols)
-        PropositionSymbol p = Util.first(symbols);
-        List<PropositionSymbol> rest = Util.rest(symbols);
-        // return DPLL(clauses, rest, model U {P = true}) or
-        // ...... DPLL(clauses, rest, model U {P = false})
-        return dpll(clauses, rest, model.union(p, true))
-                || dpll(clauses, rest, model.union(p, false));
     }
 }

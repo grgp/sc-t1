@@ -19,7 +19,7 @@ import aima.core.logic.propositional.inference.WalkSAT;
 import aima.core.logic.propositional.kb.data.ConjunctionOfClauses;
 import java.util.Random;
 
-public class Tugas1C_it1 {
+public class Tugas1B {
     public static void main(String[] args) {
         try {
             Debugger db = new Debugger();
@@ -55,7 +55,7 @@ public class Tugas1C_it1 {
                 Model model = dpll.model;
                 printSudokuModel(sf, model);
             } else if (args[0].equals("dpllmod")) {
-                ModifiedDPLL dpll = new ModifiedDPLL();
+                ModifiedOptimizedDPLL dpll = new ModifiedOptimizedDPLL();
                 boolean b = dpll.dpllModified(sf.kb);
                 Model model = dpll.model;
                 printSudokuModel(sf, model);
@@ -72,7 +72,7 @@ public class Tugas1C_it1 {
             for (int col = 1; col <= sf.dimension; col++) {
                 for (int val = 1; val <= sf.dimension; val++) {
                     String key = "x"+row+"y"+col+"z"+val;
-                    if (model == null) System.out.println("hey model is null");
+                    if (model == null) System.out.println("Error: Model is null");
                     if (model.getValue(sf.symbols.get(key)) == null) {
                         System.out.print("_ ");
                     } else if (model.getValue(sf.symbols.get(key))) {

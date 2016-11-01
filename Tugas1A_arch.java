@@ -50,7 +50,6 @@ class State {
                 min = tmp_distance;
             }
         }
-        System.out.println("min distance from " + t_location + " is: " + min + " on point " + pt);
         return min;
     }
 

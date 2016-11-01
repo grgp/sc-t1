@@ -22,7 +22,7 @@ class JarvisActionsFunction implements ActionsFunction {
             Set<Action> possibleActions = new HashSet<Action>();
 
             if (currentState.items.contains(currentState.t_location)) {
-                System.out.println("                        >>> AMBIL");
+                // System.out.println("                        >>> AMBIL");
                 possibleActions.add(new ActionTony("AMBIL"));
             }
             if (moveValid(currentState, "ATAS")) {
@@ -45,16 +45,15 @@ class JarvisActionsFunction implements ActionsFunction {
     }
 
     private boolean moveValid(State currentState, String direction) {
-        // System.out.println("From: " + currentState.t_location.x + " " + currentState.t_location.y + " | dir: " + direction);
         int checkX = currentState.t_location.x + getXOffset(direction);
         int checkY = currentState.t_location.y + getYOffset(direction);
         if ( inRange("x-axis", checkX) &&
              inRange("y-axis", checkY) ) {
             Point tempPoint = new Point(checkX, checkY);
             if ( !currentState.obstacles.contains(tempPoint) ) {
-               System.out.println("From: " + currentState.t_location.x + " " + currentState.t_location.y);
-               System.out.println("To: " + tempPoint.x + " " + tempPoint.y + " | dir: " + direction);
-               System.out.println("                        >>> " + direction);
+            //    System.out.println("From: " + currentState.t_location.x + " " + currentState.t_location.y);
+            //    System.out.println("To: " + tempPoint.x + " " + tempPoint.y + " | dir: " + direction);
+            //    System.out.println("                        >>> " + direction);
                return true;
             }
             return false;
