@@ -19,6 +19,7 @@ public class Tugas1C_factories {
 
 class SudokuFactory {
     final int dimension;
+    final int box_dimension;
     final HashMap<String, PropositionSymbol> symbols;
     KnowledgeBase kb;
 
@@ -26,6 +27,8 @@ class SudokuFactory {
         this.dimension = dimension;
         this.symbols = generateSymbols();
         this.kb = new KnowledgeBase();
+        this.box_dimension = (int) Math.sqrt(dimension);
+        System.out.println("bd: " + box_dimension);
         cellSatifiesSudoku();
     }
 
@@ -44,6 +47,9 @@ class SudokuFactory {
     private void cellSatifiesSudoku() {
         cellAtLeastOne();
         cellUniqueInRowsCols();
+        if (dimension == 9) {
+            cellUniqueInBoxes();
+        }
     }
 
     private void cellAtLeastOne() {
@@ -65,6 +71,40 @@ class SudokuFactory {
             ComplexSentence unique_col = eachCellUniqueInCol(index);
             kb.tell(unique_row);
             kb.tell(unique_col);
+        }
+    }
+
+    private void cellUniqueInBoxes() {
+        for (int value = 1; value <= dimension; value++) {
+            for (int i = 0; i < box_dimension; i++) {
+                for (int j = 0; j < box_dimension; j++) {
+                    eachCellUniqueInBox(value, i, j);
+                }
+            }
+        }
+    }
+
+    private void eachCellUniqueInBox(int value, int i, int j) {
+        ComplexSentence box = null;
+        for (int x = 1; x <= box_dimension; x++) {
+            for (int y = 1; y <= box_dimension; y++) {
+                ComplexSentence cs1 = new ComplexSentence(Connective.NOT,
+                            symbols.get("x"+(3*i+x)+"y"+(3*j+y)+"z"+value));
+                for (int k = y+1; k <= box_dimension; k++) {
+                    ComplexSentence cs2 = new ComplexSentence(Connective.NOT,
+                                symbols.get("x"+(3*i+x)+"y"+(3*j+k)+"z"+value));
+                    ComplexSentence csDisj = new ComplexSentence(cs1, Connective.OR, cs2);
+                    kb.tell(csDisj);
+                }
+                for (int k = x+1; k <= box_dimension; k++) {
+                    for (int l = 1; l <= box_dimension; l++) {
+                        ComplexSentence cs2 = new ComplexSentence(Connective.NOT,
+                                    symbols.get("x"+(3*i+k)+"y"+(3*j+l)+"z"+value));
+                        ComplexSentence csDisj = new ComplexSentence(cs1, Connective.OR, cs2);
+                        kb.tell(csDisj);
+                    }
+                }
+            }
         }
     }
 
@@ -110,21 +150,26 @@ class SudokuFactory {
                     }
                 }
             }
-            // for (int cell = 1; cell < dimension; cell++) {
-            //     ComplexSentence cs1 = new ComplexSentence(Connective.NOT,
-            //                 symbols.get("x"+cell+"y"+index+"z"+value));
-            //     ComplexSentence cs2 = new ComplexSentence(Connective.NOT,
-            //                 symbols.get("x"+(cell+1)+"y"+index+"z"+value));
-            //     ComplexSentence csDisj = new ComplexSentence(cs1, Connective.OR, cs2);
-            //
-            //     if (col == null) {
-            //         col = csDisj;
-            //     } else {
-            //         col = new ComplexSentence(col, Connective.AND, csDisj);
-            //     }
-            // }
         }
         return col;
     }
 
+}
+
+class Debugger {
+    private boolean enabled;
+
+    public Debugger(String enabled) {
+        if (enabled.equals("db")) {
+            this.enabled = true;
+        } else {
+            this.enabled = false;
+        }
+    }
+
+    public void log(Object o) {
+        if (enabled) {
+            System.out.println(o.toString());
+        }
+    }
 }

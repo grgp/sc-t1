@@ -22,11 +22,13 @@ import java.util.Random;
 public class Tugas1C_it1 {
     public static void main(String[] args) {
         try {
+            if (args.length > 1) {
+                Debugger db = new Debugger(args[1]);
+                db.log("yo wassup");
+            }
             Scanner sc = new Scanner(System.in);
             int dimension = Integer.parseInt(sc.nextLine());
-
             SudokuFactory sf = new SudokuFactory(dimension);
-            // System.out.println("KB after initialize: \n" + sf.kb);
 
             String ns = "";
             for (int row = 1; row <= dimension; row++) {
@@ -45,7 +47,7 @@ public class Tugas1C_it1 {
 
             if (args[0].equals("walksat")) {
                 WalkSAT ws = new WalkSAT();
-                Model model = ws.walkSAT(sf.kb.asCNF(), 0.5, 10000);
+                Model model = ws.walkSAT(sf.kb.asCNF(), 0.5, -1);
                 printSudokuModel(sf, model);
             } else if (args[0].equals("dpll")) {
                 ModifiedRegularDPLL dpll = new ModifiedRegularDPLL();
@@ -70,7 +72,7 @@ public class Tugas1C_it1 {
             for (int col = 1; col <= sf.dimension; col++) {
                 for (int val = 1; val <= sf.dimension; val++) {
                     String key = "x"+row+"y"+col+"z"+val;
-                    // if (model == null) System.out.println("hey model is null");
+                    if (model == null) System.out.println("hey model is null");
                     if (model.getValue(sf.symbols.get(key)) == null) {
                         System.out.print("_ ");
                     } else if (model.getValue(sf.symbols.get(key))) {
