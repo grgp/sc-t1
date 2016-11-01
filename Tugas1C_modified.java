@@ -108,52 +108,27 @@ class ModifiedDPLL extends OptimizedDPLL {
     }
 }
 
-class ModifiedOptimizedDPLL extends OptimizedDPLL {
-    @Override
-    public boolean dpllSatisfiable(Sentence s) {
-        return false;
-    }
+class ModifiedRegularDPLL extends DPLLSatisfiable {
+    Model model;
 
-    @Override
-    public boolean isEntailed(KnowledgeBase kb, Sentence alpha) {
-        return false;
+    public boolean dpllModified(KnowledgeBase kb) {
+        Set<Clause> clauses = kb.asCNF();
+        List<PropositionSymbol> symbols = new ArrayList<PropositionSymbol>(kb.getSymbols());
+        return dpll(clauses, symbols, new Model());
     }
 
     @Override
     public boolean dpll(Set<Clause> clauses, List<PropositionSymbol> symbols,
             Model model) {
-        return false;
-    }
-
-    public Model dpll(Set<Clause> clauses, List<PropositionSymbol> symbols,
-    Model model, boolean last_bool) {
-
         // if every clause in clauses is true in model then return true
+        if (everyClauseTrue(clauses, model)) {
+            this.model = model;
+            return true;
+        }
         // if some clause in clauses is false in model then return false
-        // NOTE: for optimization reasons we only want to determine the
-        // values of clauses once on each call to dpll
-        boolean allTrue = true;
-        Set<Clause> unknownClauses = new LinkedHashSet<Clause>();
-        for (Clause c : clauses) {
-            Boolean value = model.determineValue(c);
-            if (!Boolean.TRUE.equals(value)) {
-                allTrue = false;
-                if (Boolean.FALSE.equals(value)) {
-                    return null;
-                }
-                unknownClauses.add(c);
-            }
+        if (someClauseFalse(clauses, model)) {
+            return false;
         }
-        if (allTrue) {
-            return model;
-        }
-
-        // NOTE: Performance Optimization -
-        // Going forward, algorithm can ignore clauses that are already
-        // known to be true (reduces overhead on recursive calls and simplifies
-        // findPureSymbols() and findUnitClauses() logic as they can
-        // always assume unknown).
-        clauses = unknownClauses;
 
         // P, value <- FIND-PURE-SYMBOL(symbols, clauses, model)
         Pair<PropositionSymbol, Boolean> pAndValue = findPureSymbol(symbols,
@@ -161,14 +136,8 @@ class ModifiedOptimizedDPLL extends OptimizedDPLL {
         // if P is non-null then
         if (pAndValue != null) {
             // return DPLL(clauses, symbols - P, model U {P = value})
-            boolean b = dpll(clauses, minus(symbols, pAndValue.getFirst()),
-                    model.unionInPlace(pAndValue.getFirst(), pAndValue.getSecond()));
-            if (b) {
-                return dpll(clauses, minus(symbols, pAndValue.getFirst()),
-                        model.unionInPlace(pAndValue.getFirst(), pAndValue.getSecond()), b);
-            } else {
-                return null;
-            }
+            return dpll(clauses, minus(symbols, pAndValue.getFirst()),
+                    model.union(pAndValue.getFirst(), pAndValue.getSecond()));
         }
 
         // P, value <- FIND-UNIT-CLAUSE(clauses, model)
@@ -176,10 +145,8 @@ class ModifiedOptimizedDPLL extends OptimizedDPLL {
         // if P is non-null then
         if (pAndValue != null) {
             // return DPLL(clauses, symbols - P, model U {P = value})
-            boolean b = dpll(clauses, minus(symbols, pAndValue.getFirst()),
-                    model.unionInPlace(pAndValue.getFirst(), pAndValue.getSecond()));
             return dpll(clauses, minus(symbols, pAndValue.getFirst()),
-                    model.unionInPlace(pAndValue.getFirst(), pAndValue.getSecond()), b);
+                    model.union(pAndValue.getFirst(), pAndValue.getSecond()));
         }
 
         // P <- FIRST(symbols); rest <- REST(symbols)
@@ -187,26 +154,7 @@ class ModifiedOptimizedDPLL extends OptimizedDPLL {
         List<PropositionSymbol> rest = Util.rest(symbols);
         // return DPLL(clauses, rest, model U {P = true}) or
         // ...... DPLL(clauses, rest, model U {P = false})
-        boolean b1 = callDPLL(clauses, rest, model, p, true);
-        boolean b2 = callDPLL(clauses, rest, model, p, false);
-        if (b1) {
-            return callDPLL(clauses, rest, model, p, true, last_bool);
-        } else if (b2) {
-            return callDPLL(clauses, rest, model, p, false, last_bool);
-        } else {
-            return null;
-        }
+        return dpll(clauses, rest, model.union(p, true))
+                || dpll(clauses, rest, model.union(p, false));
     }
-
-    protected Model callDPLL(Set<Clause> clauses, List<PropositionSymbol> symbols,
-            Model model, PropositionSymbol p, boolean value, boolean last_bool) {
-        // We update the model in place with the assignment p=value,
-        boolean result = dpll(clauses, symbols, model.unionInPlace(p, value));
-        // as backtracking can occur during the recursive calls we
-        // need to remove the assigned value before we pop back out from this
-        // call.
-        model.remove(p);
-        return model;
-    }
-
 }
