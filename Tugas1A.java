@@ -4,7 +4,7 @@
  * @class: Sistem Cerdas A
  *
  * Class containing the main program to read the input, construct the
- * problem definition, and finally outputs it to a file.
+ * problem definition, execute a search then finally outputs it to a file.
  */
 
 import java.io.File;

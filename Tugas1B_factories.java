@@ -2,6 +2,11 @@
  * @author: George Albert
  * @author_npm: 1406569781
  * @class: Sistem Cerdas A
+ *
+ * SudokuFactory class is the primary class that would generateSymbols
+ * all the Sentences, Symbols, etc., based on the input given. It's also
+ * connected to the KnowledgeBase, which can be updated (unlike the other
+ * variables that are declared final).
  */
 
 import java.util.Map;

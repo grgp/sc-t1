@@ -2,6 +2,12 @@
  * @author: George Albert
  * @author_npm: 1406569781
  * @class: Sistem Cerdas A
+ *
+ * Modified the DPLLSatisfiable class so that it will save the correct
+ * Model, if it calculated a "true" result. The model then can be accessed.
+ *
+ * Besides the regular DPLLSatisfiable, there is also a modification of
+ * OptimizedDPLL, but it's currently broken for Sudoku bigger than 4x4.
  */
 
 import java.util.LinkedHashSet;

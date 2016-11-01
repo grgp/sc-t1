@@ -2,22 +2,20 @@
  * @author: George Albert
  * @author_npm: 1406569781
  * @class: Sistem Cerdas A
+ *
+ * Class containing the main program to read the input, construct the
+ * neccessary sentences and/or clauses, execute a SAT checking before finally
+ * writing the output to a file.
  */
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.HashMap;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.List;
 
-import aima.core.logic.propositional.kb.KnowledgeBase;
 import aima.core.logic.propositional.kb.data.Model;
-
 import aima.core.logic.propositional.inference.DPLL;
 import aima.core.logic.propositional.inference.DPLLSatisfiable;
 import aima.core.logic.propositional.inference.OptimizedDPLL;
@@ -90,6 +88,12 @@ public class Tugas1B {
         }
     }
 
+    /**
+     * A helper method to print the retrieved Sudoku model.
+     * @param  SudokuFactory object to retrieve the dimension and symbols
+     * @param  Model object represents a correct solution
+     * @param  PrintWriter object is passed from main, to write to an output file
+     */
     private static void printSudokuModel(SudokuFactory sf, Model model,
                                          PrintWriter pw) {
         try {
