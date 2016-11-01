@@ -97,11 +97,15 @@ public class Tugas1B {
     private static void printSudokuModel(SudokuFactory sf, Model model,
                                          PrintWriter pw) {
         try {
+            outerloop:
             for (int row = 1; row <= sf.dimension; row++) {
                 for (int col = 1; col <= sf.dimension; col++) {
                     for (int val = 1; val <= sf.dimension; val++) {
                         String key = "x"+row+"y"+col+"z"+val;
-                        if (model == null) pw.println("Error: Model is null");
+                        if (model == null) {
+                            System.out.println("Error: Either no solution is available, or input is invalid");
+                            break outerloop;
+                        }
                         if (model.getValue(sf.symbols.get(key)) == null) {
                             pw.print("_ ");
                         } else if (model.getValue(sf.symbols.get(key))) {
