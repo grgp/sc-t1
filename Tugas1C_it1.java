@@ -47,9 +47,13 @@ public class Tugas1C_it1 {
                 WalkSAT ws = new WalkSAT();
                 Model model = ws.walkSAT(sf.kb.asCNF(), 0.5, 10000);
                 printSudokuModel(sf, model);
-            } else {
-                // ModifiedDPLL dpll = new ModifiedDPLL();
+            } else if (args[0].equals("dpll")) {
                 ModifiedRegularDPLL dpll = new ModifiedRegularDPLL();
+                boolean b = dpll.dpllModified(sf.kb);
+                Model model = dpll.model;
+                printSudokuModel(sf, model);
+            } else if (args[0].equals("dpllmod")) {
+                ModifiedDPLL dpll = new ModifiedDPLL();
                 boolean b = dpll.dpllModified(sf.kb);
                 Model model = dpll.model;
                 printSudokuModel(sf, model);
